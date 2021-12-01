@@ -1,0 +1,36 @@
+
+li .nav-link:hover {
+    background-color: blueviolet;
+    color: black !important;
+}
+.form-group {
+    margin-top: 10px !important;
+
+}
+.form-group .form-control {
+    padding-left: 0px;
+    border: none !important;
+    border-bottom: 2px solid black !important;
+    width: 100%;
+}
+label {
+    font-weight: bold;
+}
+.data-profile {
+    overflow: auto;
+}
+.keluar:hover {
+    background-color: red;
+    color: black !important;
+}
+.reset,.simpan {
+    width: 80%;
+}
+
+.dashkrs {
+    overflow: auto;
+    max-height: 290px;
+}
+thead {
+    box-sizing: border-box !important;
+}

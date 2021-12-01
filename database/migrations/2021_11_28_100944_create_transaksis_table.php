@@ -20,6 +20,7 @@ class CreateTransaksisTable extends Migration
             $table->foreignId('mahasiswa_id')->constrained();
             $table->foreignId('mata_kuliah_id')->constrained();
             $table->enum('nilai',['Tunda','A','B','C','D','E']);
+            $table->enum('status',['Disetujui','Belum Disetujui','Dibatalkan']);
             $table->timestamps();
         });
     }

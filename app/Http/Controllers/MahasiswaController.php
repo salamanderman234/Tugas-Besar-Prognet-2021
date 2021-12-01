@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreMahasiswaRequest;
 use App\Http\Requests\UpdateMahasiswaRequest;
 use App\Models\Mahasiswa;
@@ -17,7 +18,13 @@ class MahasiswaController extends Controller
     {
         //
     }
+    public function login(){
+        return view('login.login');
+    }
 
+    public function autenticate(Request $request){
+        dd($request->password);
+    }
     /**
      * Show the form for creating a new resource.
      *

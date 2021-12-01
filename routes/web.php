@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Mahasiswa;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MahasiswaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +16,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/login',[MahasiswaController::class,'login'])->name('login');
+Route::post('/login',[MahasiswaController::class,'autenticate'])->name('post.login');
+
+Route::get('/test',function() {
     return view('welcome');
 });

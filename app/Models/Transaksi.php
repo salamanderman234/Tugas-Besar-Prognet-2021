@@ -12,8 +12,8 @@ class Transaksi extends Model
         'semester',
         'mahasiswa_id',
         'mata_kuliah_id',
-        'nilai'
-
+        'nilai',
+        'status'
     ];
 
     public function mahasiswa(){

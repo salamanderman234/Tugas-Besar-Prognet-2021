@@ -15,7 +15,9 @@ class MataKuliahController extends Controller
      */
     public function index()
     {
-        //
+        $matkul = MataKuliah::all()->orderBy('semester')->paginate(10);
+        Paginator::useBootstrap();
+        return view('mata_kuliah.daftar_matkul',compact('matkul'));
     }
 
     /**
