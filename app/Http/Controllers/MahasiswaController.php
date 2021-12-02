@@ -19,7 +19,7 @@ class MahasiswaController extends Controller
         //
     }
     public function login(){
-        return view('login.login');
+        return view('mahasiswa.login');
     }
 
     public function autenticate(Request $request){
@@ -32,7 +32,16 @@ class MahasiswaController extends Controller
      */
     public function create()
     {
-        //
+        Mahasiswa::create([
+            'nim' => '0899999',
+            'nama' => 'tresna',
+            'password_mahasiswa' => bcrypt('tresna'),
+            'alamat' => 'sukawati',
+            'telepon' => '09999',
+            'program_studi' => 'Teknologi Informasi',
+            'angkatan' => '2010',
+            'foto_mahasiswa' => '//'
+        ]);
     }
 
     /**
@@ -88,6 +97,6 @@ class MahasiswaController extends Controller
      */
     public function destroy(Mahasiswa $mahasiswa)
     {
-        //
+//
     }
 }

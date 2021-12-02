@@ -2,6 +2,7 @@
 
 use App\Models\Mahasiswa;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MahasiswaController;
 
 /*
@@ -20,7 +21,7 @@ Route::get('/', function () {
 });
 
 Route::get('/login',[MahasiswaController::class,'login'])->name('login');
-Route::post('/login',[MahasiswaController::class,'autenticate'])->name('post.login');
+Route::post('/login',[LoginController::class,'login'])->name('post.login');
 
 Route::get('/test',function() {
     return view('welcome');

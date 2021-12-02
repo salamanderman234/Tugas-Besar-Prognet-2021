@@ -18,12 +18,20 @@
             body {
                 font-family: 'Nunito', sans-serif;
             }
+            .btn {
+                background-color: #B8D7E9;
+                border-color: #B8D7E9; 
+            }
+            .btn:hover {
+                background-color: #718096;
+                border-color: #718096;
+            }
         </style>
     </head>
     <body class="antialiased h-100 d-flex align-items-center" style="background-image: url('image/unud.jpeg'); background-repeat:no-repeat; background-size:cover">
             <div class="container h-auto text-center" style="width: 60%">
                 <h1 class="text-light text-wrap fw-bold" style="font-size: 5em">Selamat Datang di Sistem KRS</h1>
-                <a role="button" class="btn btn-primary mt-4 px-5" style="font-size: 1.1em">Masuk</a>
+                <a href="{{ route("login") }}" role="button" class="btn btn-primary mt-4 px-5 capsule" style="font-size: 1.1em">Masuk</a>
             </div>
         
     </body>

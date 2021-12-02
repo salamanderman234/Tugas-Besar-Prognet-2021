@@ -19,6 +19,7 @@ class MahasiswaFactory extends Factory
             'nim'=>$this->faker->unique()->ean8(),
             'alamat'=>$this->faker->sentence(),
             'telepon'=>$this->faker->phoneNumber(),
+            'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', 
             'program_studi'=>implode("",Arr::random(['Teknologi Informasi', 'Teknik Mesin'],1)),
             'angkatan'=>'2020',
             'foto_mahasiswa'=>'//'

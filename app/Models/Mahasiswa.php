@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Model;
 
 class Mahasiswa extends Model
 {
@@ -14,8 +14,17 @@ class Mahasiswa extends Model
         'telepon',
         'program_studi',
         'angkatan',
-        'foto_mahasiswa'
+        'foto_mahasiswa',
+        'password_mahasiswa'
     ];
+    
+    protected $hidden = [
+        'remember_token',
+    ];
+    public function getAuthPassword()
+    {
+        return $this->password_mahasiswa;
+    }
 
     public function transaksi(){
         return $this->hasMany(Transaksi::class);

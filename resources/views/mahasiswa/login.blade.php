@@ -12,19 +12,34 @@
     <div class="row">
       <div class="col-6 rounded-3" style="background-image: url('image/unud.jpeg'); background-repeat:no-repeat; background-size:cover">
       </div>
-      <form class="col-6 p-4" action="{{route('post.login')}}" method="POST">
+      <form class="col-6 p-4" action="{{ route('post.login') }}" method="post">
         @csrf
-        <div class="mb-3">
+        <div class="mb-0">
           <label for="nim" class="form-label" style="font-size: 0.9rem">NIM</label>
-          <input type="text" class="form-control" id="nim">
+          <input type="text" class="form-control @error('nim') is-invalid @enderror" id="nim" name="nim" value="{{ old('nim') }}">
+          <div class="container text-danger d-flex justify-content-end p-0" style="font-size: 0.8em; height: 1.3em">
+            @if (session()->has('login_error'))
+                {{ session('login_error') }}
+            @endif
+            @error('nim')
+                {{ $message }}
+            @enderror
+          </div>
         </div>
-        <div class="mb-3">
+        <div class="mb-2">
           <label for="password" class="form-label" style="font-size: 0.9rem">Password</label>
-          <input type="password" class="form-control" id="password">
+          <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password">
+          <div class="container text-danger d-flex justify-content-end p-0" style="font-size: 0.8em; height: 1.3em">
+              @error('password')
+                  
+                {{ $message }}
+                  
+              @enderror
+          </div>
         </div>
         <div class="container-fluid d-flex justify-content-between p-0 mb-4">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+            <input class="form-check-input" type="checkbox" value="yes" id="rememberme" name="rememberme">
             <label class="form-check-label" for="flexCheckDefault"  style="font-size: 0.9rem">
                Ingat Saya
             </label>
