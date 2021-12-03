@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\Collection;
 use App\Http\Requests\StoreMataKuliahRequest;
 use App\Http\Requests\UpdateMataKuliahRequest;
+use Illuminate\Pagination\Paginator;
 use App\Models\MataKuliah;
+use App\Models\Mahasiswa;
 
 class MataKuliahController extends Controller
 {
@@ -13,11 +16,12 @@ class MataKuliahController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        $matkul = MataKuliah::all()->orderBy('semester')->paginate(10);
+        $mahasiswa_prodi = Mahasiswa::select('program_studi')->where('id',$id)->get()->toArray()[0]["program_studi"];
+        $matkuls = MataKuliah::where('prodi','=',$mahasiswa_prodi)->orderBy('semester')->paginate(10);
         Paginator::useBootstrap();
-        return view('mata_kuliah.daftar_matkul',compact('matkul'));
+        return view('mata_kuliah.daftar_matkul',compact('matkuls'));
     }
 
     /**

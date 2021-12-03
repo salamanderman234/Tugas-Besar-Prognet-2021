@@ -15,7 +15,7 @@
     </div>
     <div class="row p-3 pt-0 mt-2">
         <table class="table table-striped">
-            <thead class="bg-primary">
+            <thead class="bg-primary text-light">
               <tr>
                 <th scope="col">No</th>
                 <th scope="col">Kode</th>
@@ -26,39 +26,20 @@
               </tr>
             </thead>
             <tbody class="border-0">
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry the Bird</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@twitter</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry the Bird</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@twitter</td>
-              </tr>
+              @foreach ($matkuls as $matkul)
+                  <tr>
+                    <th>{{ $loop->index+1+($matkuls->currentPage()-1)*5 }}</th>
+                    <th>{{ $matkul->kode }}</th>
+                    <th>{{ $matkul->nama_mata_kuliah }}</th>
+                    <th> {{ $matkul->semester }} </th>
+                    <th> {{ $matkul->sks }} </th>
+                    <th> {{ $matkul->status_mk }} </th>
+                  </tr>
+              @endforeach
             </tbody>
           </table>
+          <div class="d-flex justify-content-center">
+            {{ $matkuls->links() }}
+          </div>
     </div>
 @endsection

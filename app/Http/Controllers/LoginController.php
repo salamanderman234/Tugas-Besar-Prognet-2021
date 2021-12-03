@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+
+    public function index(){
+        return view('mahasiswa.login');
+    }
+
     public function login(){
         $credentials = request()->validate([
             'nim' => 'required',
@@ -15,8 +20,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)){
             request()->session()->regenerate();
-
-            return redirect()->intended('/profile');
+            return redirect()->intended(route('profile',Auth::id()));
         } else {
             return back()->with('login_error','NIM atau Password Salah');
         }

@@ -14,16 +14,18 @@ class MahasiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $mahasiswa = Mahasiswa::find($id);
+        return view('mahasiswa.profile',compact('mahasiswa'));
     }
-    public function login(){
-        return view('mahasiswa.login');
-    }
+    public function ubah($id){
+        $mahasiswa = Mahasiswa::find($id);
+        $mahasiswa->alamat = request()->alamat;
+        $mahasiswa->telepon = request()->telepon;
+        $mahasiswa->save();
 
-    public function autenticate(Request $request){
-        dd($request->password);
+        return redirect()->route('profile',$id);
     }
     /**
      * Show the form for creating a new resource.
