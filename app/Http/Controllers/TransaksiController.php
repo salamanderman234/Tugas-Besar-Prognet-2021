@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTransaksiRequest;
 use App\Http\Requests\UpdateTransaksiRequest;
 use App\Models\Transaksi;
+use App\Models\MataKuliah;
 
 class TransaksiController extends Controller
 {
@@ -15,7 +16,14 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        //
+        //mengambil data mata kuliah dan juga mengambil data transaksi yang dibutuhkan seperti status krs
+        $krs = MataKuliah::krsMahasiswa(auth()->user()->id);
+        $tahun_ajaran = $krs->select('tahun_ajaran','transaksis.semester')->groupBy('tahun_ajaran','transaksis.semester')->orderBy('transaksis.semester')->get();
+
+        return view('mahasiswa.krs',[
+            'krs' => $krs->get(),
+            'tahun_ajarans' => $tahun_ajaran
+        ]);
     }
 
     /**

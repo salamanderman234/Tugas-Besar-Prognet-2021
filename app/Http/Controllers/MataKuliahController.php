@@ -16,9 +16,9 @@ class MataKuliahController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index()
     {
-        $mahasiswa_prodi = Mahasiswa::select('program_studi')->where('id',$id)->get()->toArray()[0]["program_studi"];
+        $mahasiswa_prodi = Mahasiswa::select('program_studi')->where('id',auth()->user()->id)->get()->toArray()[0]["program_studi"];
         $matkuls = MataKuliah::where('prodi','=',$mahasiswa_prodi)->orderBy('semester')->paginate(10);
         Paginator::useBootstrap();
         return view('mata_kuliah.daftar_matkul',compact('matkuls'));

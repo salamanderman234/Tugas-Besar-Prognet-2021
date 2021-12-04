@@ -14,18 +14,18 @@ class MahasiswaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index()
     {
-        $mahasiswa = Mahasiswa::find($id);
+        $mahasiswa = Mahasiswa::find(auth()->user()->id);
         return view('mahasiswa.profile',compact('mahasiswa'));
     }
-    public function ubah($id){
-        $mahasiswa = Mahasiswa::find($id);
+    public function ubah(){
+        $mahasiswa = Mahasiswa::find(auth()->user()->id);
         $mahasiswa->alamat = request()->alamat;
         $mahasiswa->telepon = request()->telepon;
         $mahasiswa->save();
 
-        return redirect()->route('profile',$id);
+        return redirect()->route('profile');
     }
     /**
      * Show the form for creating a new resource.
@@ -35,11 +35,11 @@ class MahasiswaController extends Controller
     public function create()
     {
         Mahasiswa::create([
-            'nim' => '0899999',
-            'nama' => 'tresna',
+            'nim' => '2005551140',
+            'nama' => 'I Dogler',
             'password_mahasiswa' => bcrypt('tresna'),
             'alamat' => 'sukawati',
-            'telepon' => '09999',
+            'telepon' => '0888111882',
             'program_studi' => 'Teknologi Informasi',
             'angkatan' => '2010',
             'foto_mahasiswa' => '//'
