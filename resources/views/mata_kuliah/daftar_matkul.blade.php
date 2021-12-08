@@ -28,7 +28,7 @@
             <tbody class="border-0">
               @foreach ($matkuls as $matkul)
                   <tr>
-                    <th>{{ $loop->index+1+($matkuls->currentPage()-1)*5 }}</th>
+                    <th>{{ $loop->index+1+($matkuls->currentPage()-1)*10 }}</th>
                     <th>{{ $matkul->kode }}</th>
                     <th>{{ $matkul->nama_mata_kuliah }}</th>
                     <th> {{ $matkul->semester }} </th>

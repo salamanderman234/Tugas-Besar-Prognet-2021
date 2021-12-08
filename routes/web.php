@@ -2,6 +2,7 @@
 
 use App\Models\Mahasiswa;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\TransaksiController;
@@ -29,6 +30,18 @@ Route::get('/profile',[MahasiswaController::class,'index'])->name('profile');
 Route::post('/ubahprofile',[MahasiswaController::class,'ubah'])->name('ubah');
 Route::get('/matkul',[MataKuliahController::class,'index'])->name('mata_kuliah');
 Route::get('/krs',[TransaksiController::class,'index'])->name('krs');
+Route::get('/krs/cari',[TransaksiController::class,'krsMahasiswa'])->name('cari_krs');
+
+Route::get('/admin',[AdminController::class,'profile'])->name('admin');
+Route::post('/adminubah',[AdminController::class,'ubah'])->name('ubah_admin');
+Route::get('/daftarmatkul',[MataKuliahController::class,'semua_matkul'])->name('daftar_matkul');
+Route::get('/tambahmatkul',[MataKuliahController::class,'tambah'])->name('tambah_matkul');
+Route::post('/simpantambah',[MataKuliahController::class,'simpan_tambah'])->name('simpan_tambah');
+Route::post('/daftarmatkul/{id}/hapus',[MataKuliahController::class,'hapus'])->name('hapus_matkul');
+Route::get('/daftarmatkul/{id}',[MataKuliahController::class,'edit'])->name('edit_matkul');
+Route::post('/daftarmatkul/{id}/simpanedit',[MataKuliahController::class,'simpanedit'])->name('simpan_edit_matkul'); 
+
+// Route::post('/daftarmatkul/{id}/hapus',[MataKuliahController::class,'hapus'])->name('hapus_matkul');
 
 
 Route::get('/test',function() {

@@ -8,7 +8,7 @@
       <img class="w-25 rounded-circle" src="image/mahasiswa/{{ $mahasiswa->foto_mahasiswa }}" alt="image/user1.jpg" style="weight:100px; height:100px">
     </div>
     {{-- data --}}
-    <form class="row p-0 m-0" action="{{ route('ubah',session()->getId()) }}" method="post">
+    <form class="row p-0 m-0" action="{{ route('ubah')}}" method="post">
       @csrf
       <div class="form-group">
         <label for="nim">NIM</label>

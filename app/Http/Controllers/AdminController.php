@@ -2,30 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests\StoreMahasiswaRequest;
-use App\Http\Requests\UpdateMahasiswaRequest;
 use App\Models\Mahasiswa;
+use Illuminate\Http\Request;
 
-class MahasiswaController extends Controller
+class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function profile()
     {
-        $mahasiswa = Mahasiswa::find(auth()->user()->id);
-        return view('mahasiswa.profile',compact('mahasiswa'));
+        $admin = Mahasiswa::find(auth()->user()->id);
+        return view('admin.profile',compact('admin'));
     }
-    public function ubah(){
-        $mahasiswa = Mahasiswa::find(auth()->user()->id);
-        $mahasiswa->alamat = request()->alamat;
-        $mahasiswa->telepon = request()->telepon;
-        $mahasiswa->save();
 
-        return redirect()->route('profile');
+    public function ubah(){
+        $admin = Mahasiswa::find(auth()->user()->id);
+        $admin->alamat = request()->alamat;
+        $admin->telepon = request()->telepon;
+        if(isset(request()->password_mahasiswa)){
+            $admin->password_mahasiswa = bcrypt(request()->password_mahasiswa);
+        }
+        $admin->save();
+        return redirect()->route('admin',[
+            $pesan => "Password Berhasil Diubah !"
+        ]);
     }
     /**
      * Show the form for creating a new resource.
@@ -34,25 +37,16 @@ class MahasiswaController extends Controller
      */
     public function create()
     {
-        Mahasiswa::create([
-            'nim' => 'admin1',
-            'nama' => 'admin',
-            'password_mahasiswa' => bcrypt('tresna'),
-            'alamat' => 'sukawati',
-            'telepon' => '0888111882',
-            'program_studi' => 'admin',
-            'angkatan' => '2019',
-            'foto_mahasiswa' => '//'
-        ]);
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreMahasiswaRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreMahasiswaRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -82,11 +76,11 @@ class MahasiswaController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateMahasiswaRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Mahasiswa  $mahasiswa
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateMahasiswaRequest $request, Mahasiswa $mahasiswa)
+    public function update(Request $request, Mahasiswa $mahasiswa)
     {
         //
     }
@@ -99,6 +93,6 @@ class MahasiswaController extends Controller
      */
     public function destroy(Mahasiswa $mahasiswa)
     {
-//
+        //
     }
 }
