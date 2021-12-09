@@ -16,9 +16,6 @@ li .nav-link:hover {
 label {
     font-weight: bold;
 }
-.data-profile {
-    overflow: auto;
-}
 .keluar:hover {
     background-color: red;
     color: black !important;
@@ -33,4 +30,8 @@ label {
 }
 thead {
     box-sizing: border-box !important;
+}
+.konten , .data-profile{
+    overflow-y: auto;
+    overflow-x: hidden;
 }

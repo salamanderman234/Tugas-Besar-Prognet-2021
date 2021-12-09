@@ -53,4 +53,7 @@
     </div>
   </div>
 </body>
+<script>
+  localStorage.clear();
+</script>
 </html>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTransaksiRequest;
 use App\Http\Requests\UpdateTransaksiRequest;
+use Illuminate\Pagination\Paginator;
 use App\Models\Transaksi;
 use App\Models\MataKuliah;
 
@@ -24,8 +25,6 @@ class TransaksiController extends Controller
         //mengambil data tahun ajaran sekarang
         if(!($krs->get()->toArray() == null)){
             if(((int)date('m')>6 && $krs->get()->toArray()[0]['semester']%2==0) || ((int)date('m')<=6 && $krs->get()->toArray()[0]['semester']%2!=0) || (date('Y') != $krs->get()->toArray()[0]['tahun_ajaran'])){
-                // if(date('Y') == $krs->get()->toArray()[0]['tahun_ajaran']){
-                    // dd($krs->get()->toArray()[0]['semester']);
                     if((int)date('m')<=6){
                         $tahun_ajaran_sekarang = [
                             'semester' => 'Genap',
@@ -58,10 +57,11 @@ class TransaksiController extends Controller
                 ];
             }
         }
-        
+        $semester = 0;
         return view('mahasiswa.krs',[
             'tahun_ajarans' => $tahun_ajaran,
-            'tahun_ajaran_sekarang' => $tahun_ajaran_sekarang
+            'tahun_ajaran_sekarang' => $tahun_ajaran_sekarang,
+            'semester' => $semester
         ]);
     }
 
@@ -73,14 +73,37 @@ class TransaksiController extends Controller
         ]);
     }
 
+    public function tambahKrs(){
+        $is_genap = 0;
+        if((int)date('m')>6){
+            $is_genap=1;
+        }
+        $matkuls = MataKuliah::where('prodi','=',auth()->user()->program_studi)
+                ->whereRaw('semester%2='.(string)$is_genap)
+                ->orderBy('semester')
+                ->paginate(8);
+        Paginator::useBootstrap();
+        return view('mahasiswa.tambah_krs',compact('matkuls'));
+    }
+    
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function simpanKrs()
     {
-        //
+        foreach(explode(',',request()->listKrs) as $krs){
+            Transaksi::create([
+                'tahun_ajaran' => date('Y'),
+                'semester' => (int)request()->semesterKrs,
+                'mahasiswa_id' => auth()->user()->id,
+                'mata_kuliah_id' => (int)$krs,
+                'nilai' => 'Tunda',
+                'status' => 'Belum Disetujui'
+            ]);
+        }
+        return redirect()->route('krs');
     }
 
     /**

@@ -26,11 +26,22 @@ Route::get('/', function () {
 Route::get('/login',[LoginController::class,'index'])->name('login');
 Route::post('/login',[LoginController::class,'login'])->name('post.login');
 
-Route::get('/profile',[MahasiswaController::class,'index'])->name('profile');
-Route::post('/ubahprofile',[MahasiswaController::class,'ubah'])->name('ubah');
+Route::prefix('/profile')->group(function () {
+    Route::get('/',[MahasiswaController::class,'index'])->name('profile');
+    Route::post('/ubah',[MahasiswaController::class,'ubah'])->name('ubah');
+});
+
 Route::get('/matkul',[MataKuliahController::class,'index'])->name('mata_kuliah');
-Route::get('/krs',[TransaksiController::class,'index'])->name('krs');
-Route::get('/krs/cari',[TransaksiController::class,'krsMahasiswa'])->name('cari_krs');
+
+Route::prefix('/krs')->group(function () {
+    Route::get('/',[TransaksiController::class,'index'])->name('krs');
+    Route::get('/cari',[TransaksiController::class,'krsMahasiswa'])->name('cari_krs');
+    Route::get('/tambah',[TransaksiController::class,'tambahKrs'])->name('tambah_krs');
+    Route::post('/simpankrs',[TransaksiController::class,'simpanKrs'])->name('simpan_krs');
+});
+
+
+
 
 Route::get('/admin',[AdminController::class,'profile'])->name('admin');
 Route::post('/adminubah',[AdminController::class,'ubah'])->name('ubah_admin');
