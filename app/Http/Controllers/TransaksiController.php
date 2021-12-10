@@ -25,18 +25,30 @@ class TransaksiController extends Controller
         //mengambil data tahun ajaran sekarang
         if(!($krs->get()->toArray() == null)){
             if(((int)date('m')>6 && $krs->get()->toArray()[0]['semester']%2==0) || ((int)date('m')<=6 && $krs->get()->toArray()[0]['semester']%2!=0) || (date('Y') != $krs->get()->toArray()[0]['tahun_ajaran'])){
+                    $val = $krs->get()->toArray()[0]['semester'];
+                    $tahun = $krs->get()->toArray()[0]['tahun_ajaran'];
+                    if($val%2==0){
+                        $val += 1;
+                    }
+                    // dd(((int)date('Y') - $tahun));
                     if((int)date('m')<=6){
+
                         $tahun_ajaran_sekarang = [
                             'semester' => 'Genap',
                             'tahun_ajaran' => (string)(((integer)date('Y'))-1).'/'.date('Y')
-                            ,'value' => $krs->get()->toArray()[0]['semester'] + 1
+                            ,'value' => $val + ((int)date('Y') - $tahun)
                         ];
                     }
                     else {
+                        if(((int)date('Y') - $tahun == 0 && $val % 2 == 0) || 7){
+                            $val += 1;
+                        }else if(1==1){
+                            //
+                        }
                         $tahun_ajaran_sekarang = [
                             'semester' => 'Ganjil',
                             'tahun_ajaran' => date('Y').'/'.(string)(((integer)date('Y'))+1),
-                            'value' => $krs->get()->toArray()[0]['semester'] + 1
+                            'value' => $val + ((int)date('Y') - $tahun)
                         ];
                     }
                 // }

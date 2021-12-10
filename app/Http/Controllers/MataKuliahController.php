@@ -18,9 +18,9 @@ class MataKuliahController extends Controller
      */
     public function index()
     {
-        $mahasiswa_prodi = Mahasiswa::select('program_studi')->where('id',auth()->user()->id)->get()->toArray()[0]["program_studi"];
-        $matkuls = MataKuliah::where('prodi','=',$mahasiswa_prodi)->orderBy('semester')->paginate(10);
+        $matkuls = MataKuliah::where('prodi','=',auth()->user()->program_studi)->orderBy('semester')->paginate(8);
         Paginator::useBootstrap();
+        // dd(json_encode($matkuls));
         return view('mata_kuliah.daftar_matkul',compact('matkuls'));
     }
 
@@ -118,6 +118,12 @@ class MataKuliahController extends Controller
         //
     }
 
+    public function cari(){
+        $matkuls = MataKuliah::select(['kode','nama_mata_kuliah','semester','sks','status_mk'])
+                    ->where('prodi','=',auth()->user()->program_studi)
+                    ->cari(request()->cari,['kode','nama_mata_kuliah'])->get();
+        return json_encode($matkuls);
+    }
     /**
      * Remove the specified resource from storage.
      *

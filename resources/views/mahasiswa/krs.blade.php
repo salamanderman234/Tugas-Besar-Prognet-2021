@@ -3,7 +3,6 @@
 @section('tittle','krs')
 
 @section('content')
-{{-- {{dd(count($tahun_ajarans))}} --}}
     <div class="row p-3 pt-4 pb-1">
       <div class="col-7 pb-0 ps-0 d-flex align-items-end">
         <div class="btn-group border d-flex align-items-center ps-2 border-dark rounded-3">
@@ -76,10 +75,6 @@
         tabel_krs(url_ajax);
       });
   });
-
-  
- 
-
 </script>
 @endsection
 

@@ -1,3 +1,4 @@
+//ajax pada krs
 function tabel_krs(url_ajax){
     $.ajax({
       type:"GET",
@@ -48,4 +49,67 @@ function tabel_krs(url_ajax){
         
       }
     });
-  } 
+  }
+
+//mencari data menggunakan ajax
+function ajax_search(document,route){
+    let html_element = $(document);
+    html_element.load(route,function(response,textStatus){
+        if(textStatus=='success'){
+          let response_json = JSON.parse(response);
+          html_element.empty();
+          if(response_json.length==0){
+            $(html_element).append('<tr><td colspan="6" align="center"> Pencarian Tidak Ditemukan ! </td></tr>');
+          }else {
+            response_json.forEach((element,index) => {
+              $(html_element).append(row_str([index+1,element]));
+            });
+          }
+
+        }
+    });
+}
+
+//generate string untuk fetch row pada tabel
+function row_str(arr){
+  let string = '<tr><th scope="row">'+ arr[0] +'</th>';
+  Object.values(arr[1]).forEach(element =>{
+    string += '<td>'+element+'</td>';  
+  });
+  string += '</tr>';
+  return string;
+}
+
+// fungsi untuk mengubah tombol dan menambahkan value ke localStorage
+function krs_tambah(id){
+  var krs_cache = JSON.parse(localStorage['krs']).list; 
+  var krs_maks = JSON.parse(localStorage['krs']).max;
+  var krs_len = JSON.parse(localStorage['krs']).len;
+  if($('#'+id).hasClass("btn-success" )){
+    if(krs_len == krs_maks){
+        alert('tidak bisa');
+    }else {
+        $('#'+id).removeClass( "btn-success" ).addClass('btn-danger').text('Hapus');
+        krs_cache.push(Number($('#'+id).val()));
+        krs_len += Number($('#sks-'+id).val());
+    }
+  }else {
+    $('#'+id).removeClass( "btn-danger" ).addClass('btn-success').text('Tambah');
+    krs_cache.pop(Number($('#'+id).val()));
+    krs_len -= Number($('#sks-'+id).val()); 
+  }
+  localStorage['krs'] = JSON.stringify({list:krs_cache,max:krs_maks,len:krs_len});
+}
+
+//fungsi untuk tombol ajukan pada tambah krs
+function krs_ajukan(){
+  if(typeof localStorage['krs'] !== 'undefined'){
+    var list = JSON.parse(localStorage['krs']).list;
+    var semester = localStorage['semester'];
+    $('#list-krs').attr('value',list.join(','));
+    $('#semester-krs').attr('value',semester);
+    localStorage.clear();
+  }else {
+      alert('Data Masih Kosong Silahkan diisi terlebih dahulu !');
+  }
+}

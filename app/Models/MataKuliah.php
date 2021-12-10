@@ -26,5 +26,19 @@ class MataKuliah extends Model
                 ->where('transaksis.mahasiswa_id','=',$id)
                 ->orderBy('transaksis.semester','desc');
     }
+    //untuk melakukan pencarian berdasarkan sebuah keyword pada beberapa fields
+    public function scopeCari($query, $filter,array $fields ){
+        if(isset($filter) && count($fields)>0){
+            foreach($fields as $key=>$field){
+                if($key > 0){
+                    $query->orWhere($field,'like','%'.$filter.'%');
+                }else {
+                    $query->where($field,'like','%'.$filter.'%');
+                }
+            }
+        }else {
+            $query->limit(8);
+        }
+    }
     use HasFactory;
 }

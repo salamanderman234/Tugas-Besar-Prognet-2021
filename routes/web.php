@@ -31,7 +31,10 @@ Route::prefix('/profile')->group(function () {
     Route::post('/ubah',[MahasiswaController::class,'ubah'])->name('ubah');
 });
 
-Route::get('/matkul',[MataKuliahController::class,'index'])->name('mata_kuliah');
+Route::prefix('/matkul')->group(function () {
+    Route::get('/',[MataKuliahController::class,'index'])->name('mata_kuliah');
+    Route::get('/cari',[MataKuliahController::class,'cari'])->name('cari_matkul');
+});
 
 Route::prefix('/krs')->group(function () {
     Route::get('/',[TransaksiController::class,'index'])->name('krs');

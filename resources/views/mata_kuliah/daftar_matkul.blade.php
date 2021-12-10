@@ -9,7 +9,7 @@
       </div>
       <div class="col-5 pe-0">
         <form class="mb-3 mb-lg-0 d-flex justify-content-end">
-          <input type="search" class="form-control form-control-dark w-75" placeholder="Cari Matakuliah" aria-label="Search">
+          <input id="search" type="search" class="form-control form-control-dark w-75" placeholder="Cari Matakuliah" aria-label="Search">
         </form>
       </div>
     </div>
@@ -28,18 +28,33 @@
             <tbody class="border-0">
               @foreach ($matkuls as $matkul)
                   <tr>
-                    <th>{{ $loop->index+1+($matkuls->currentPage()-1)*10 }}</th>
-                    <th>{{ $matkul->kode }}</th>
-                    <th>{{ $matkul->nama_mata_kuliah }}</th>
-                    <th> {{ $matkul->semester }} </th>
-                    <th> {{ $matkul->sks }} </th>
-                    <th> {{ $matkul->status_mk }} </th>
+                    <td>{{ $loop->index+1+($matkuls->currentPage()-1)*8 }}</td>
+                    <td>{{ $matkul->kode }}</th>
+                    <td>{{ $matkul->nama_mata_kuliah }}</td>
+                    <td> {{ $matkul->semester }} </td>
+                    <td> {{ $matkul->sks }} </td>
+                    <td> {{ $matkul->status_mk }} </td>
                   </tr>
               @endforeach
             </tbody>
           </table>
-          <div class="d-flex justify-content-center">
+          <div class="d-flex justify-content-center" hidden>
             {{ $matkuls->links() }}
           </div>
     </div>
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/script.js"></script>
+<script>
+  $(document).ready(function(){
+    $('#search').on('keyup',function(){
+       let url = '{{ route("cari_matkul",["cari"=>"nilai"]) }}'.replace('nilai',$('#search').val());
+       if($('#search').val()){
+          $('.pagination').hide();
+       }else {
+          $('.pagination').show();
+       }
+       ajax_search('tbody',url);
+    });
+  }); 
+</script>
 @endsection
