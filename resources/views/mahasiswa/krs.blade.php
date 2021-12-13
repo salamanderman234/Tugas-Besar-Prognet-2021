@@ -11,6 +11,15 @@
                 <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5h16V4H0V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5z"/>
             </svg>
             <select name="tahun_ajaran" id="tahun_ajaran" class="form-select rounded-0 ms-0">
+              @if (isset($tahun_ajaran_sekarang)&& empty($tahun_ajarans))
+                <option value="{{ $tahun_ajaran_sekarang['semester'] }}">
+                  @if ($tahun_ajaran_sekarang['semester'] % 2 == 0)
+                      {{ "Genap - ".strval($tahun_ajaran_sekarang['tahun_ajaran']-1)."/".strval($tahun_ajaran_sekarang['tahun_ajaran']) }}
+                  @else
+                      {{ "Ganjil  -  ".strval($tahun_ajaran_sekarang['tahun_ajaran'])."/".strval($tahun_ajaran_sekarang["tahun_ajaran"]+1)}}
+                  @endif
+                </option>
+              @endif
               @foreach ($tahun_ajarans as $tahun_ajaran)
                 @if (isset($tahun_ajaran_sekarang)&& $loop->index == 0)
                   <option value="{{ $tahun_ajaran_sekarang['semester'] }}">

@@ -21,9 +21,10 @@ class TransaksiController extends Controller
         //mengambil data semester dan tahun krs
         $tahun_ajaran = Transaksi::tahun_ajaran(auth()->user()->id);
         $tahun_ajaran_sekarang = null;
-        $semester = $tahun_ajaran->toArray()[0]['semester'];
+        $semester = 1;
         //mengambil data tahun ajaran sekarang
-        if($tahun_ajaran != null){
+        if(!empty($tahun_ajaran->toArray())){
+            $semester = $tahun_ajaran->toArray()[0]['semester'];
             if(((int)date('m')>6 && $tahun_ajaran->toArray()[0]['semester']%2==0) || ((int)date('m')<=6 && $tahun_ajaran->toArray()[0]['semester']%2!=0) || (date('Y') != $tahun_ajaran->toArray()[0]['tahun_ajaran'])){
                 $tahun = $tahun_ajaran->toArray()[0]['tahun_ajaran'];
                 if((int)date('m')<=6){

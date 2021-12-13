@@ -10,7 +10,7 @@
                 <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5h16V4H0V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5z"/>
             </svg>
             <select name="tahun_ajaran" id="tahun_ajaran" class="form-select rounded-0 ms-0">
-              @foreach ($tahun_ajarans as $tahun_ajaran)
+              @forelse ($tahun_ajarans as $tahun_ajaran)
                 <option value="{{ $tahun_ajaran->semester }}">
                   @if ($tahun_ajaran->semester % 2 == 0)
                       {{ "Genap - ".strval($tahun_ajaran->tahun_ajaran-1)."/".strval($tahun_ajaran->tahun_ajaran) }}
@@ -18,6 +18,8 @@
                       {{ "Ganjil  -  ".strval($tahun_ajaran->tahun_ajaran)."/".strval($tahun_ajaran->tahun_ajaran+1)}}
                   @endif
                 </option>
+              @empty
+                <option value="0">Belum Ada KHS</option>
               @endforeach
             </select>
         </div>
