@@ -28,4 +28,14 @@ class LoginController extends Controller
             return back()->with('login_error','NIM atau Password Salah');
         }
     }
+    public function logout()
+    {
+        Auth::logout();
+
+        request()->session()->invalidate();
+
+        request()->session()->regenerateToken();
+
+        return redirect()->route('login');
+    }
 }
