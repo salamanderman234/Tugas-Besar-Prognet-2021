@@ -10,8 +10,11 @@
         <div class="col-7 ps-0">
             <form action=" {{ route('simpan_krs') }} " method="POST" class="p-0">
                 @csrf
-                <input id="list-krs" type="text" hidden name="listKrs" value="0">
-                <input id="semester-krs" type="text" hidden name="semesterKrs" value="0">
+                <input id="listKrs" type="text" hidden name="listKrs" value="0">
+                <input id="semesterKrs" type="text" hidden name="semesterKrs" value="0">
+                <a href="{{ route('krs') }}" class="btn btn-danger" onclick="krs_ajukan()">
+                  Kembali
+                </a>
                 <button type="submit" class="btn btn-success" onclick="krs_ajukan()">
                     Ajukan
                 </button>
@@ -63,14 +66,15 @@
   $(document).ready(function(){
     //untuk inisialisasi localStorage jika kosong
     if(!localStorage['krs']){
-      var temp = {list:[],max:10,len:0};
+      let temp = {list:[],max:10};
       localStorage['krs'] = JSON.stringify(temp);
     }
+    //menghitung banyak sks yang sudah diambil
+    
     //mencari data dari localStorage
-    var krs_cache = JSON.parse(localStorage['krs']).list; 
-    var krs_maks = JSON.parse(localStorage['krs']).max;
-    var krs_len = JSON.parse(localStorage['krs']).len;
-
+    let krs_cache = JSON.parse(localStorage['krs']).list; 
+    let krs_maks = JSON.parse(localStorage['krs']).max;
+    let krs_len = parseInt(localStorage['krs_len']);
     //untuk mengecek krs yang sudah ada di localStorage
     for(var i=1;i<= {{ count($matkuls) }};i++){
         if(krs_cache.includes(Number($('#'+i).val()))){
@@ -85,7 +89,7 @@
       }else {
           $('.pagination').show();
       }
-      ajax_search('tbody',url);
+      ajax_search('tbody',url,6);
     });
   }); 
 </script>

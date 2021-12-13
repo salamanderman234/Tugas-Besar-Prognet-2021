@@ -21,7 +21,7 @@ class MataKuliah extends Model
     }
 
     public static function krsMahasiswa($id){
-        return MataKuliah::select('kode','nama_mata_kuliah','sks','status','tahun_ajaran','transaksis.semester')
+        return MataKuliah::select('transaksis.id','kode','nama_mata_kuliah','sks','status','tahun_ajaran','transaksis.semester')
                 ->join('transaksis', 'mata_kuliahs.id', '=', 'transaksis.mata_kuliah_id')
                 ->where('transaksis.mahasiswa_id','=',$id)
                 ->orderBy('transaksis.semester','desc');

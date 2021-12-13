@@ -21,10 +21,11 @@ use App\Http\Controllers\MataKuliahController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('guest');
 
-Route::get('/login',[LoginController::class,'index'])->name('login');
+Route::get('/login',[LoginController::class,'index'])->name('login')->middleware('guest');
 Route::post('/login',[LoginController::class,'login'])->name('post.login');
+Route::post('/logout',[LoginController::class,'logout'])->name('logout');
 
 Route::prefix('/profile')->group(function () {
     Route::get('/',[MahasiswaController::class,'index'])->name('profile');
@@ -41,10 +42,14 @@ Route::prefix('/krs')->group(function () {
     Route::get('/cari',[TransaksiController::class,'krsMahasiswa'])->name('cari_krs');
     Route::get('/tambah',[TransaksiController::class,'tambahKrs'])->name('tambah_krs');
     Route::post('/simpankrs',[TransaksiController::class,'simpanKrs'])->name('simpan_krs');
+    Route::get('/hapus/{id}',[TransaksiController::class,'hapusKrs'])->name('hapus_krs');
+    Route::get('/detail/{id}',[TransaksiController::class,'detailKrs'])->name('detail_krs');
 });
 
-
-
+Route::prefix('/khs')->group(function () {
+    Route::get('/',[TransaksiController::class,'khs'])->name('khs');
+    Route::get('/cari',[TransaksiController::class,'khsMahasiswa'])->name('cari_khs');
+});
 
 Route::get('/admin',[AdminController::class,'profile'])->name('admin');
 Route::post('/adminubah',[AdminController::class,'ubah'])->name('ubah_admin');

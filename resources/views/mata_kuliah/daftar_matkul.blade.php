@@ -53,7 +53,7 @@
        }else {
           $('.pagination').show();
        }
-       ajax_search('tbody',url);
+       ajax_search('tbody',url,6);
     });
   }); 
 </script>

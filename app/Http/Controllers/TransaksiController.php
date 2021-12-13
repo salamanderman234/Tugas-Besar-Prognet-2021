@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateTransaksiRequest;
 use Illuminate\Pagination\Paginator;
 use App\Models\Transaksi;
 use App\Models\MataKuliah;
+use Illuminate\Support\Arr;
 
 class TransaksiController extends Controller
 {
@@ -17,72 +18,63 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        //mengambil data mata kuliah dan juga mengambil data transaksi yang dibutuhkan seperti status krs
-        $krs = MataKuliah::krsMahasiswa(auth()->user()->id);
         //mengambil data semester dan tahun krs
-        $tahun_ajaran = $krs->select('tahun_ajaran','transaksis.semester')->groupBy('tahun_ajaran','transaksis.semester')->orderBy('transaksis.semester')->get();
+        $tahun_ajaran = Transaksi::tahun_ajaran(auth()->user()->id);
         $tahun_ajaran_sekarang = null;
+        $semester = $tahun_ajaran->toArray()[0]['semester'];
         //mengambil data tahun ajaran sekarang
-        if(!($krs->get()->toArray() == null)){
-            if(((int)date('m')>6 && $krs->get()->toArray()[0]['semester']%2==0) || ((int)date('m')<=6 && $krs->get()->toArray()[0]['semester']%2!=0) || (date('Y') != $krs->get()->toArray()[0]['tahun_ajaran'])){
-                    $val = $krs->get()->toArray()[0]['semester'];
-                    $tahun = $krs->get()->toArray()[0]['tahun_ajaran'];
-                    if($val%2==0){
-                        $val += 1;
-                    }
-                    // dd(((int)date('Y') - $tahun));
-                    if((int)date('m')<=6){
-
-                        $tahun_ajaran_sekarang = [
-                            'semester' => 'Genap',
-                            'tahun_ajaran' => (string)(((integer)date('Y'))-1).'/'.date('Y')
-                            ,'value' => $val + ((int)date('Y') - $tahun)
-                        ];
-                    }
-                    else {
-                        if(((int)date('Y') - $tahun == 0 && $val % 2 == 0) || 7){
-                            $val += 1;
-                        }else if(1==1){
-                            //
-                        }
-                        $tahun_ajaran_sekarang = [
-                            'semester' => 'Ganjil',
-                            'tahun_ajaran' => date('Y').'/'.(string)(((integer)date('Y'))+1),
-                            'value' => $val + ((int)date('Y') - $tahun)
-                        ];
-                    }
-                // }
+        if($tahun_ajaran != null){
+            if(((int)date('m')>6 && $tahun_ajaran->toArray()[0]['semester']%2==0) || ((int)date('m')<=6 && $tahun_ajaran->toArray()[0]['semester']%2!=0) || (date('Y') != $tahun_ajaran->toArray()[0]['tahun_ajaran'])){
+                $tahun = $tahun_ajaran->toArray()[0]['tahun_ajaran'];
+                if((int)date('m')<=6){
+                    $nilai = TransaksiController::selisih((integer) date('Y'),(integer)$tahun_ajaran->toArray()[0]['tahun_ajaran'],0,$tahun_ajaran->toArray()[0]['semester']);
+                    $tahun_ajaran_sekarang = [
+                        'semester' => $nilai,
+                        'tahun_ajaran' => (integer) date('Y')
+                    ];
+                }
+                else {
+                    $nilai = TransaksiController::selisih((integer) date('Y'),(integer)$tahun_ajaran->toArray()[0]['tahun_ajaran'],1,$tahun_ajaran->toArray()[0]['semester']);
+                    $tahun_ajaran_sekarang = [
+                        'semester' => $nilai,
+                        'tahun_ajaran' => (integer) date('Y')
+                    ];
+                }
+                $semester = $nilai;
             }
         }else {
             if((int)date('m')<=6){
-                $tahun_ajaran_sekarang = [
-                    'semester' => 'Genap',
-                    'tahun_ajaran' => (string)(((integer)date('Y'))-1).'/'.date('Y')
-                    ,'value' => 1
+                $tahun_ajaran_sekarang= [
+                    'semester' => 1,
+                    'tahun_ajaran' => (integer)date('Y')
                 ];
             }
             else {
                 $tahun_ajaran_sekarang = [
-                    'semester' => 'Ganjil',
-                    'tahun_ajaran' => date('Y').'/'.(string)(((integer)date('Y'))+1),
-                    'value' => 1
+                    'semester' => 1,
+                    'tahun_ajaran' => (integer) date('Y'),
                 ];
             }
         }
-        $semester = 0;
         return view('mahasiswa.krs',[
             'tahun_ajarans' => $tahun_ajaran,
             'tahun_ajaran_sekarang' => $tahun_ajaran_sekarang,
             'semester' => $semester
         ]);
     }
-
+    private function selisih($tahun_sekarang,$tahun_terakhir,$semester_sekarang,$semester_terakhir){
+        while(!($tahun_sekarang == $tahun_terakhir && $semester_terakhir%2 == $semester_sekarang)){
+            $semester_terakhir++;
+            if($semester_terakhir % 2 == 0){
+                $tahun_terakhir++;
+            }
+        }
+        return $semester_terakhir;
+    }
     public function krsMahasiswa(){
         // dd(request()->semester);
         $krs = MataKuliah::krsMahasiswa(auth()->user()->id)->where('transaksis.semester','=',request()->semester)->get();
-        return response()->json([
-            "krs"=> $krs
-        ]);
+        return json_encode($krs);
     }
 
     public function tambahKrs(){
@@ -105,72 +97,48 @@ class TransaksiController extends Controller
      */
     public function simpanKrs()
     {
-        foreach(explode(',',request()->listKrs) as $krs){
-            Transaksi::create([
-                'tahun_ajaran' => date('Y'),
-                'semester' => (int)request()->semesterKrs,
-                'mahasiswa_id' => auth()->user()->id,
-                'mata_kuliah_id' => (int)$krs,
-                'nilai' => 'Tunda',
-                'status' => 'Belum Disetujui'
-            ]);
+        if(isset(request()->listKrs)){
+            foreach(explode(',',request()->listKrs) as $krs){
+                Transaksi::create([
+                    'tahun_ajaran' => date('Y'),
+                    'semester' => (int)request()->semesterKrs,
+                    'mahasiswa_id' => auth()->user()->id,
+                    'mata_kuliah_id' => (int)$krs,
+                    'nilai' => 'Tunda',
+                    'status' => 'Belum Disetujui'
+                ]);
+            }
         }
         return redirect()->route('krs');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreTransaksiRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreTransaksiRequest $request)
-    {
-        //
+    public function khs(){
+        $tahun_ajarans = Transaksi::select('tahun_ajaran','semester')
+                        ->where('mahasiswa_id','=',auth()->user()->id)
+                        ->where('status','=','Disetujui')
+                        ->groupBy('tahun_ajaran','transaksis.semester')
+                        ->orderBy('transaksis.semester','desc')
+                        ->get();
+        return view('mahasiswa.khs',[
+            "tahun_ajarans" => $tahun_ajarans
+        ]);
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Transaksi $transaksi)
-    {
-        //
+    public function khsMahasiswa(){
+        $khs = Transaksi::khs(auth()->user()->id,[
+            'kode',
+            'nama_mata_kuliah',
+            'nilai',
+            'transaksis.tahun_ajaran',
+            'transaksis.semester'
+        ])->where('transaksis.semester','=',request()->semester);
+        
+        return json_encode($khs->get());
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Transaksi $transaksi)
-    {
-        //
+    public function hapusKrs($id){
+        Transaksi::find($id)->delete();
+        return redirect()->route('krs');
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateTransaksiRequest  $request
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateTransaksiRequest $request, Transaksi $transaksi)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Transaksi  $transaksi
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Transaksi $transaksi)
-    {
-        //
+    public function detailKrs($id){
+        $matkul = Transaksi::find($id)->matkul;
+        return view('mahasiswa.detail_krs',compact('matkul'));
     }
 }

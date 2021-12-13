@@ -1,6 +1,6 @@
 
 li .nav-link:hover {
-    background-color: blueviolet;
+    background-color: #75aaf4;
     color: black !important;
 }
 .form-group {
@@ -18,7 +18,6 @@ label {
 }
 .keluar:hover {
     background-color: red;
-    color: black !important;
 }
 .reset,.simpan {
     width: 80%;
