@@ -25,7 +25,13 @@ class MataKuliahController extends Controller
     }
 
     public function semua_matkul(){
-        $mata_kuliahs = MataKuliah::where('id','!=',0)->orderBy('prodi')->paginate(8);
+        $mata_kuliahs = MataKuliah::where('id','!=',0);
+        if(request()->search){
+            $mata_kuliahs->where('nama_mata_kuliah','LIKE','%'.request()->search.'%')
+                         ->orWhere('kode','LIKE','%'.request()->search.'%')
+                         ->orWhere('prodi','LIKE','%'.request()->search.'%');
+        }
+        $mata_kuliahs = $mata_kuliahs->orderBy('prodi')->paginate(8);
         Paginator::useBootstrap();
         return view('mata_kuliah.seluruh_matkul',compact('mata_kuliahs'));
     }
@@ -39,6 +45,13 @@ class MataKuliahController extends Controller
     }
     public function simpan_tambah()
     {
+        request()->validate([
+            'kode'=> 'required|unique:mata_kuliahs',
+            'nama_mata_kuliah'=>'required',
+            'semester'=>'required|numeric',
+            'sks'=> 'required|numeric',
+            'status_mk'=>'required'
+        ]);
         MataKuliah::create([
             'kode' => request()->kode,
             'nama_mata_kuliah' => request()->nama_mata_kuliah,
@@ -47,7 +60,7 @@ class MataKuliahController extends Controller
             'prodi' => request()->prodi,
             'status_mk' => request()->status_mk
         ]);
-        return redirect()->route('daftar_matkul');
+        return redirect()->route('daftar_matkul')->with('berhasil','Mata Kuliah Berhasil Ditambahkan !');
     }
 
     /**
@@ -85,17 +98,19 @@ class MataKuliahController extends Controller
     }
 
     public function simpanedit($id){
-        // dd(request());
-        request()->validate([
+        $validate = [
             'kode' => 'required',
             'nama_mata_kuliah' => 'required',
             'semester' => 'required|numeric',
             'sks' => 'required|numeric',
             'prodi' => 'required',
             'status_mk' => 'required'
-        ]);
-
+        ];
         $matkul = MataKuliah::find($id);
+        if(request()->kode!=$matkul->kode){
+            $validate['kode'] = 'required|unique:mata_kuliahs';
+        }
+        request()->validate($validate);
         $matkul->kode = request()->kode;
         $matkul->nama_mata_kuliah = request()->nama_mata_kuliah;
         $matkul->semester = request()->semester;
@@ -132,17 +147,12 @@ class MataKuliahController extends Controller
      */
     public function hapus($id)
     {
-        
-        // $matkul = MataKuliah::find($id);
-        // dd($matkul->relations);
-        // if($matkul->relations != null){
-        //     return redirect()->route('daftar_matkul',[
-        //         "pesan" => "Terjadi Kesalahan !"
-        //     ]);
-        // }
-        // $matkul->delete();
-        // return redirect()->route('daftar_matkul',[
-        //     "pesan" => "Hapus Mata Kuliah Berhasil !"
-        // ]);
+        $matkul = MataKuliah::find($id);
+        $transaksis = $matkul->transaksi()->get();
+        foreach($transaksis as $transaksi){
+            $transaksi->delete();
+        }
+        $matkul->delete();
+        return redirect()->route('daftar_matkul')->with('berhasil','Data Berhasil Dihapus !');
     }
 }

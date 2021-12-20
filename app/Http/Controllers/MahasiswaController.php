@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreMahasiswaRequest;
 use App\Http\Requests\UpdateMahasiswaRequest;
 use App\Models\Mahasiswa;
+use Illuminate\Pagination\Paginator;
 
 class MahasiswaController extends Controller
 {
@@ -16,8 +17,18 @@ class MahasiswaController extends Controller
      */
     public function index()
     {
-        $mahasiswa = Mahasiswa::find(auth()->user()->id);
-        return view('mahasiswa.profile',compact('mahasiswa'));
+        return view('mahasiswa.profile');
+    }
+    public function semua_mahasiswa(){
+        $mahasiswas = Mahasiswa::where('jabatan','=','mahasiswa');
+        if(request()->search){
+            $mahasiswas->where('nama','LIKE','%'.request()->search.'%')
+                        ->orWhere('nim','LIKE','%'.request()->search.'%')
+                        ->orWhere('program_studi','LIKE','%'.request()->search.'%');
+        }
+        $mahasiswas = $mahasiswas->orderBy('program_studi')->paginate(8);
+        Paginator::useBootstrap();
+        return view('admin.daftar_mahasiswa',compact('mahasiswas'));
     }
     public function ubah(){
         $mahasiswa = Mahasiswa::find(auth()->user()->id);
@@ -27,23 +38,15 @@ class MahasiswaController extends Controller
 
         return redirect()->route('profile');
     }
+
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function tambah()
     {
-        Mahasiswa::create([
-            'nim' => 'admin1',
-            'nama' => 'admin',
-            'password_mahasiswa' => bcrypt('tresna'),
-            'alamat' => 'sukawati',
-            'telepon' => '0888111882',
-            'program_studi' => 'admin',
-            'angkatan' => '2019',
-            'foto_mahasiswa' => '//'
-        ]);
+        return view('mahasiswa.tambah_mahasiswa');      
     }
 
     /**
@@ -52,9 +55,29 @@ class MahasiswaController extends Controller
      * @param  \App\Http\Requests\StoreMahasiswaRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreMahasiswaRequest $request)
+    public function simpan_tambah()
     {
-        //
+        request()->validate([
+            'nim'=> 'required|unique:mahasiswas',
+            'nama'=>'required',
+            'password_mahasiswa'=>'required',
+            'alamat'=> 'required',
+            'telepon'=>'required|numeric',
+            'program_studi'=>'required',
+            'angkatan'=>'required|numeric'
+        ]);
+        Mahasiswa::create([
+            'nim' => request()->nim,
+            'nama' => request()->nama,
+            'password_mahasiswa' => bcrypt(request()->password_mahasiswa),
+            'alamat' => request()->alamat,
+            'telepon' => request()->telepon,
+            'program_studi' => request()->program_studi,
+            'angkatan' => request()->angkatan,
+            'jabatan'=>'mahasiswa',
+            'foto_mahasiswa' => '//'
+        ]);
+        return redirect()->route('daftar_mahasiswa')->with('berhasil','Mahasiswa Berhasil Ditambahkan !');
     }
 
     /**
@@ -63,33 +86,41 @@ class MahasiswaController extends Controller
      * @param  \App\Models\Mahasiswa  $mahasiswa
      * @return \Illuminate\Http\Response
      */
-    public function show(Mahasiswa $mahasiswa)
+    public function edit($id)
     {
-        //
+        $mahasiswa = Mahasiswa::find($id);
+        return view('mahasiswa.edit_mahasiswa',compact('mahasiswa'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Mahasiswa  $mahasiswa
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Mahasiswa $mahasiswa)
-    {
-        //
+    public function simpanedit($id){
+        $validate = [
+            'nim'=> 'required',
+            'nama'=>'required',
+            'alamat'=> 'required',
+            'telepon'=>'required|numeric',
+            'program_studi'=>'required',
+            'angkatan'=>'required|numeric'
+        ];
+        $mahasiswa = Mahasiswa::find($id);
+        if(request()->kode!=$mahasiswa->kode){
+            $validate['nim'] = 'required|unique:mahasiswas';
+        }
+        request()->validate($validate);
+        $mahasiswa->nim = request()->nim;
+        $mahasiswa->nama = request()->nama;
+        $mahasiswa->alamat = request()->alamat;
+        $mahasiswa->telepon = request()->telepon;
+        $mahasiswa->program_studi = request()->program_studi;
+        $mahasiswa->angkatan = request()->angkatan;
+        if(request()->password_mahasiswa){
+            $mahasiswa->password_mahasiswa= bcrypt(request()->password_mahasiswa);
+        }
+        $mahasiswa->save();
+
+        return redirect()->route('daftar_mahasiswa');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateMahasiswaRequest  $request
-     * @param  \App\Models\Mahasiswa  $mahasiswa
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateMahasiswaRequest $request, Mahasiswa $mahasiswa)
-    {
-        //
-    }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -97,8 +128,10 @@ class MahasiswaController extends Controller
      * @param  \App\Models\Mahasiswa  $mahasiswa
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Mahasiswa $mahasiswa)
+    public function hapus($id)
     {
-//
+        $mahasiswa = Mahasiswa::find($id);
+        $mahasiswa->delete();
+        return redirect()->route('daftar_mahasiswa');
     }
 }

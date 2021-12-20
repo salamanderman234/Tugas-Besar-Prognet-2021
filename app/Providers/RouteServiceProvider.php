@@ -17,7 +17,8 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/profile';
+    // .route(auth()user()->role())
+    public const HOME = '/mahasiswa';
 
     /**
      * The controller namespace for the application.

@@ -15,11 +15,11 @@ class CreateMataKuliahsTable extends Migration
     {
         Schema::create('mata_kuliahs', function (Blueprint $table) {
             $table->id();
-            $table->string('kode');
+            $table->string('kode')->unique();
             $table->string('nama_mata_kuliah');
             $table->integer('semester');
             $table->integer('sks');
-            $table->enum('prodi',['Teknologi Informasi','Teknik Mesin']);
+            $table->enum('prodi',['Teknologi Informasi','Teknik Mesin','Teknik Industri','Teknik Elektro','Teknik Arsitektur']);
             $table->enum('status_mk',['Wajib','Pilihan']);
             $table->timestamps();
         });

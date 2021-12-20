@@ -15,14 +15,15 @@ class MahasiswaFactory extends Factory
     public function definition()
     {
         return [
-            'nama'=>$this->faker->name(),
-            'nim'=>$this->faker->unique()->ean8(),
-            'alamat'=>$this->faker->sentence(),
+            'nama'=>"I Gede Tresna Agung Saputra",
+            'nim'=>"asiap",
+            'alamat'=>"Jalan raya yangbatu",
             'telepon'=>$this->faker->phoneNumber(),
-            'password_mahasiswa' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', 
+            'password_mahasiswa' => bcrypt("tresna"), 
             'program_studi'=>implode("",Arr::random(['Teknologi Informasi', 'Teknik Mesin'],1)),
             'angkatan'=>'2020',
-            'foto_mahasiswa'=>'//'
+            'foto_mahasiswa'=>'//',
+            'jabatan'=>'admin'
         ];
     }
 }

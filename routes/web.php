@@ -23,41 +23,49 @@ Route::get('/', function () {
     return view('welcome');
 })->middleware('guest');
 
+//login
 Route::get('/login',[LoginController::class,'index'])->name('login')->middleware('guest');
 Route::post('/login',[LoginController::class,'login'])->name('post.login');
 Route::post('/logout',[LoginController::class,'logout'])->name('logout');
 
-Route::prefix('/profile')->group(function () {
-    Route::get('/',[MahasiswaController::class,'index'])->name('profile')->middleware('auth');
-    Route::post('/ubah',[MahasiswaController::class,'ubah'])->name('ubah')->middleware('auth');
+Route::prefix('/mahasiswa')->middleware('auth')->middleware('verifikasi')->group(function () {
+    //profile
+    Route::get('/',[MahasiswaController::class,'index'])->name('mahasiswa');
+    Route::post('/ubah',[MahasiswaController::class,'ubah'])->name('ubah');
+    //matkul
+    Route::get('/matkul',[MataKuliahController::class,'index'])->name('mata_kuliah');
+    Route::get('/matkul/cari',[MataKuliahController::class,'cari'])->name('cari_matkul');
+    //krs
+    Route::get('/krs',[TransaksiController::class,'index'])->name('krs');
+    Route::get('/krs/cari',[TransaksiController::class,'krsMahasiswa'])->name('cari_krs');
+    Route::get('/krs/tambah',[TransaksiController::class,'tambahKrs'])->name('tambah_krs');
+    Route::post('/krs/simpankrs',[TransaksiController::class,'simpanKrs'])->name('simpan_krs');
+    Route::get('/krs/hapus/{id}',[TransaksiController::class,'hapusKrs'])->name('hapus_krs');
+    Route::get('/krs/detail/{id}',[TransaksiController::class,'detailKrs'])->name('detail_krs');
+    //khs
+    Route::get('/khs',[TransaksiController::class,'khs'])->name('khs');
+    Route::get('/khs/cari',[TransaksiController::class,'khsMahasiswa'])->name('cari_khs');
 });
 
-Route::prefix('/matkul')->group(function () {
-    Route::get('/',[MataKuliahController::class,'index'])->name('mata_kuliah')->middleware('auth');
-    Route::get('/cari',[MataKuliahController::class,'cari'])->name('cari_matkul')->middleware('auth');
+Route::prefix('/admin')->middleware('auth')->middleware('verifikasi')->group(function () {
+    Route::get('/',[AdminController::class,'profile'])->name('admin');
+    Route::post('/ubah',[AdminController::class,'ubah'])->name('ubah_admin');
+
+     // mahasiswa
+     Route::get('/daftarmahasiswa',[MahasiswaController::class,'semua_mahasiswa'])->name('daftar_mahasiswa');
+     Route::get('/daftarmahasiswa/tambah',[MahasiswaController::class,'tambah'])->name('tambah_mahasiswa');
+     Route::post('/daftarmahasiswa/tambah/simpan',[MahasiswaController::class,'simpan_tambah'])->name('simpan_tambah_mahasiswa');
+     Route::get('/daftarmahasiswa/{id}',[MahasiswaController::class,'edit'])->name('edit_mahasiswa');
+     Route::post('/daftarmahasiswa/{id}/simpanedit',[MahasiswaController::class,'simpanedit'])->name('simpan_edit_mahasiswa');
+     Route::post('/daftarmahasiswa/{id}/hapus',[MahasiswaController::class,'hapus'])->name('hapus_mahasiswa'); 
+
+    // mata kuliah
+    Route::get('/daftarmatkul',[MataKuliahController::class,'semua_matkul'])->name('daftar_matkul');
+    Route::get('/daftarmatkul/tambah',[MataKuliahController::class,'tambah'])->name('tambah_matkul');
+    Route::post('/daftarmatkul/tambah/simpan',[MataKuliahController::class,'simpan_tambah'])->name('simpan_tambah');
+    Route::get('/daftarmatkul/{id}',[MataKuliahController::class,'edit'])->name('edit_matkul');
+    Route::post('/daftarmatkul/{id}/simpanedit',[MataKuliahController::class,'simpanedit'])->name('simpan_edit_matkul');
+    Route::post('/daftarmatkul/{id}/hapus',[MataKuliahController::class,'hapus'])->name('hapus_matkul'); 
 });
 
-Route::prefix('/krs')->group(function () {
-    Route::get('/',[TransaksiController::class,'index'])->name('krs')->middleware('auth');
-    Route::get('/cari',[TransaksiController::class,'krsMahasiswa'])->name('cari_krs')->middleware('auth');
-    Route::get('/tambah',[TransaksiController::class,'tambahKrs'])->name('tambah_krs')->middleware('auth');
-    Route::post('/simpankrs',[TransaksiController::class,'simpanKrs'])->name('simpan_krs')->middleware('auth');
-    Route::get('/hapus/{id}',[TransaksiController::class,'hapusKrs'])->name('hapus_krs')->middleware('auth');
-    Route::get('/detail/{id}',[TransaksiController::class,'detailKrs'])->name('detail_krs')->middleware('auth');
-});
 
-Route::prefix('/khs')->group(function () {
-    Route::get('/',[TransaksiController::class,'khs'])->name('khs')->middleware('auth');
-    Route::get('/cari',[TransaksiController::class,'khsMahasiswa'])->name('cari_khs')->middleware('auth');
-});
-
-Route::get('/admin',[AdminController::class,'profile'])->name('admin');
-Route::post('/adminubah',[AdminController::class,'ubah'])->name('ubah_admin');
-Route::get('/daftarmatkul',[MataKuliahController::class,'semua_matkul'])->name('daftar_matkul');
-Route::get('/tambahmatkul',[MataKuliahController::class,'tambah'])->name('tambah_matkul');
-Route::post('/simpantambah',[MataKuliahController::class,'simpan_tambah'])->name('simpan_tambah');
-Route::post('/daftarmatkul/{id}/hapus',[MataKuliahController::class,'hapus'])->name('hapus_matkul');
-Route::get('/daftarmatkul/{id}',[MataKuliahController::class,'edit'])->name('edit_matkul');
-Route::post('/daftarmatkul/{id}/simpanedit',[MataKuliahController::class,'simpanedit'])->name('simpan_edit_matkul'); 
-
-// Route::post('/daftarmatkul/{id}/hapus',[MataKuliahController::class,'hapus'])->name('hapus_matkul');

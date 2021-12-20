@@ -61,8 +61,7 @@
             </div>
       </div>
 </div>
-<script src="/js/jquery-3.6.0.min.js"></script>
-<script type="text/javascript">
+<script>
   $(document).ready(function(){
     //untuk inisialisasi localStorage jika kosong
     if(!localStorage['krs']){

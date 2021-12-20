@@ -20,9 +20,10 @@ class CreateMahasiswasTable extends Migration
             $table->text('password_mahasiswa');
             $table->string('alamat');
             $table->string('telepon',30);
-            $table->enum('program_studi', ['Teknologi Informasi', 'Teknik Mesin']);
+            $table->enum('program_studi', ['Teknologi Informasi','Teknik Mesin','Teknik Industri','Teknik Elektro','Teknik Arsitektur']);
             $table->year('angkatan'); //nanti ubah agar tidak nullable
             $table->string('foto_mahasiswa');
+            $table->string('jabatan');
             $table->rememberToken();
             $table->timestamps();
         });

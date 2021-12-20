@@ -1,6 +1,6 @@
 @extends('dashboard-template')
 
-@section('tittle','matakuliah')
+@section('tittle','Mata Kuliah')
 
 @section('content')
     <div class="row p-3 pt-4 pb-1">

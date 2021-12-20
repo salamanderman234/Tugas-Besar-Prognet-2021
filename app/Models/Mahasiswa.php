@@ -15,6 +15,7 @@ class Mahasiswa extends Model
         'program_studi',
         'angkatan',
         'foto_mahasiswa',
+        'jabatan',
         'password_mahasiswa'
     ];
     
@@ -29,5 +30,8 @@ class Mahasiswa extends Model
     public function transaksi(){
         return $this->hasMany(Transaksi::class);
     }
+    // public function jabatan(){
+    //     return $this->belongsTo(Jabatan::class);
+    // }
     use HasFactory;
 }

@@ -20,10 +20,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)){
             request()->session()->regenerate();
-            if(auth()->user()->nama == 'admin'){
-                return redirect()->intended(route('admin'));
-            }
-            return redirect()->intended(route('profile'));
+            return redirect()->intended(route(auth()->user()->jabatan));
         } else {
             return back()->with('login_error','NIM atau Password Salah');
         }
