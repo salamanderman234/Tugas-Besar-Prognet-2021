@@ -10,15 +10,40 @@ use Illuminate\Pagination\Paginator;
 
 class MahasiswaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    ///////////////////  FUNGSI UNTUK MAHASISWA  /////////////////////////////
+
+    //fungsi untuk menampilkan data mahasiswa (user)
     public function index()
     {
-        return view('mahasiswa.profile');
+        return view('user.profile');
     }
+
+    //fungsi untuk mengubah data mahasiswa (user)
+    public function ubah(){
+        //menyimpan foto profil
+        request()->validate([
+            'alamat' => 'required|max:255',
+            'telepon' => 'required|max:20',
+            'foto_mahasiswa'=>'image|max:5120|mimes:jpg,png,jpeg'
+        ]);
+
+        $mahasiswa = Mahasiswa::find(auth()->user()->id);
+
+        if(request()->file('foto_mahasiswa')){
+            $mahasiswa->foto_mahasiswa = request()->file('foto_mahasiswa')
+                                                  ->store('profile-mahasiswa');
+        }
+        $mahasiswa->alamat = request()->alamat;
+        $mahasiswa->telepon = request()->telepon;
+        $mahasiswa->save();
+
+        return redirect()->route('mahasiswa');
+    }
+    ////////////////  AKHIR DARI FUNGSI UNTUK MAHASISWA  //////////////////
+
+    /////////////// FUNGSI UNTUk ADMIN  ///////////////////////////
+    
+    //fungsi untuk menampilkan seluruh mahasiswa
     public function semua_mahasiswa(){
         $mahasiswas = Mahasiswa::where('jabatan','=','mahasiswa');
         if(request()->search){
@@ -28,33 +53,16 @@ class MahasiswaController extends Controller
         }
         $mahasiswas = $mahasiswas->orderBy('program_studi')->paginate(8);
         Paginator::useBootstrap();
-        return view('admin.daftar_mahasiswa',compact('mahasiswas'));
-    }
-    public function ubah(){
-        $mahasiswa = Mahasiswa::find(auth()->user()->id);
-        $mahasiswa->alamat = request()->alamat;
-        $mahasiswa->telepon = request()->telepon;
-        $mahasiswa->save();
-
-        return redirect()->route('profile');
+        return view('mahasiswa.daftar_mahasiswa',compact('mahasiswas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    //fungsi untuk menampilkan view tambah mahasiswa
     public function tambah()
     {
         return view('mahasiswa.tambah_mahasiswa');      
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreMahasiswaRequest  $request
-     * @return \Illuminate\Http\Response
-     */
+    //fungsi untuk menyimpan mahasiswa baru
     public function simpan_tambah()
     {
         request()->validate([
@@ -77,21 +85,20 @@ class MahasiswaController extends Controller
             'jabatan'=>'mahasiswa',
             'foto_mahasiswa' => '//'
         ]);
-        return redirect()->route('daftar_mahasiswa')->with('berhasil','Mahasiswa Berhasil Ditambahkan !');
+        return redirect()->route('daftar_mahasiswa')->with([
+            'jenis_pesan'=>'success',
+            'pesan'=>'Mahasiswa berhasil ditambahkan !'
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Mahasiswa  $mahasiswa
-     * @return \Illuminate\Http\Response
-     */
+    //fungsi untuk menampilkan halaman edit mahasiswa
     public function edit($id)
     {
         $mahasiswa = Mahasiswa::find($id);
         return view('mahasiswa.edit_mahasiswa',compact('mahasiswa'));
     }
 
+    //fungsi untuk menyimpan perubahan pada mahasiswa
     public function simpanedit($id){
         $validate = [
             'nim'=> 'required',
@@ -120,18 +127,16 @@ class MahasiswaController extends Controller
         return redirect()->route('daftar_mahasiswa');
     }
 
-    
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Mahasiswa  $mahasiswa
-     * @return \Illuminate\Http\Response
-     */
+    //fungsi untuk menghapus mahasiswa
     public function hapus($id)
     {
         $mahasiswa = Mahasiswa::find($id);
         $mahasiswa->delete();
-        return redirect()->route('daftar_mahasiswa');
+        return redirect()->route('daftar_mahasiswa')->with([
+            'jenis_pesan'=>'danger',
+            'pesan'=>'Mahasiswa berhasil dihapus'
+        ]);;
     }
+
+    ///////////////  AKHIR DARI FUNGSI UNTUK ADMIN  /////////////////////
 }

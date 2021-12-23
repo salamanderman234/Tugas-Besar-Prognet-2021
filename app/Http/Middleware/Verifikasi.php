@@ -16,9 +16,14 @@ class verifikasi
      */
     public function handle(Request $request, Closure $next)
     {
-        if((strpos($request->url(),'/'.auth()->user()->jabatan))){
-            return $next($request);
+        if(auth()->user() != null){
+            if((strpos($request->url(),'/'.auth()->user()->jabatan))){
+                return $next($request);
+            }
+            return redirect()->intended(route(auth()->user()->jabatan));
+        } else {
+            return redirect()->route('login');
         }
-        return redirect()->intended(route(auth()->user()->jabatan));
+
     }
 }

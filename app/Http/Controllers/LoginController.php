@@ -7,11 +7,12 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-
+    //halaman login
     public function index(){
-        return view('mahasiswa.login');
+        return view('user.login');
     }
 
+    //autentikasi
     public function login(){
         $credentials = request()->validate([
             'nim' => 'required',
@@ -25,6 +26,8 @@ class LoginController extends Controller
             return back()->with('login_error','NIM atau Password Salah');
         }
     }
+
+    //logout
     public function logout()
     {
         Auth::logout();

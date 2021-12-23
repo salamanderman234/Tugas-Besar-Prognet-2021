@@ -1,14 +1,14 @@
-@extends('admin.dashboard')
+@extends('dashboard-template')
 @section('tittle','Profile')
 @section('content')
 @error('foto_mahasiswa')
   <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
 @enderror
 <div class="row h-100 d-flex align-items-center justify-content-center">
-  <div class="col-6 shadow rounded p-3 ">
+  <div class="col-6 shadow rounded p-3">
       {{-- foto profile --}}
       <div class="row d-flex justify-content-center p-0 m-0 mt-2">
-        <div id="gambar" class="p-0 rounded-circle border" style="width:30%; height:130px; background-image: url('/image/unud.jpeg'); background-repeat:no-repeat; background-size:cover; overflow: hidden">
+        <div id="gambar" class="p-0 rounded-circle border" style="width:30%; height:130px; background-image: url('{{ auth()->user()->foto_mahasiswa=='//' ? asset('storage/default-pic/unud.jpeg') : asset('storage/'.auth()->user()->foto_mahasiswa)  }}'); background-repeat:no-repeat; background-size:cover; overflow: hidden">
           <div class="semi-circle container h-75"></div>
           <div id="upload_poto" class="rotated-semi-circle container d-flex justify-content-center text-white bg-dark pt-1" style="height: 25%">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-camera-fill" viewBox="0 0 16 16">
@@ -19,24 +19,43 @@
         </div>
       </div>
     {{-- data --}}
-    <form class="row p-0 m-0" action="{{ route('ubah_admin') }}" method="post">
+    <form class="row p-0 m-0" action="{{ route('ubah')}}" method="post" enctype="multipart/form-data">
       @csrf
-      <input type="file" hidden name="foto_mahasiswa" id="input_poto">
-      <div class="form-group mb-1">
+      <input type="file" hidden name="foto_mahasiswa" id="input_poto" accept="image/png, image/jpg, image/jpeg" />
+        @error('foto_mahasiswa')
+          <div class="invalid-feedback">
+            {{ $message }}
+          </div>
+        @enderror
+      <div class="form-group">
+        <label for="nim">NIM</label>
+        <input type="text" class="form-control rounded-0" id="nim" placeholder="NIM" value="{{ auth()->user()->nim }}" readonly>
+      </div>
+      <div class="form-group">
         <label for="nama">Nama Lengkap</label>
-        <input type="text" class="form-control rounded-0" id="nama" placeholder="Nama" value="{{ auth()->user()->nama }}">
+        <input type="text" class="form-control rounded-0" id="nama" placeholder="Nama" value="{{ auth()->user()->nama }}" readonly>
       </div>
-      <div class="form-group mb-1">
+      <div class="form-group">
         <label for="alamat">Alamat</label>
-        <input type="text" class="form-control rounded-0" id="alamat" placeholder="Apartment, studio, or floor" value="{{ auth()->user()->alamat }}" name="alamat">
+        <input type="text" class="form-control rounded-0 @error('alamat') is-invalid @enderror" id="alamat" placeholder="Apartment, studio, or floor" value="{{ auth()->user()->alamat }}" name="alamat">
+        @error('alamat')
+          <div class="invalid-feedback">
+            {{ $message }}
+          </div>
+        @enderror
       </div>
-      <div class="form-group mb-1">
+      <div class="form-group">
           <label for="telepon">No. Telp</label>
-          <input type="text" class="form-control rounded-0" id="telepon" placeholder="No. Telepon" value="{{ auth()->user()->telepon }}" name="telepon">
-      </div>
+          <input type="text" class="form-control rounded-0 @error('telepon') is-invalid @enderror" id="telepon" placeholder="No. Telepon" value="{{ auth()->user()->telepon }}" name="telepon">
+          @error('telepon')
+            <div class="invalid-feedback">
+              {{ $message }}
+            </div>
+          @enderror
+        </div>
       <div class="form-group mb-4">
-        <label for="pass">Jabatan</label>
-        <input type="text" class="form-control rounded-0" id="pass" placeholder="Jabatan" name="jabatan" value="{{ auth()->user()->jabatan }}" readonly>
+        <label for="program_studi">Program Studi</label>
+        <input type="text" class="form-control rounded-0" id="program_studi" placeholder="Program Studi" value="{{ auth()->user()->program_studi }}" readonly>
       </div>
       <div class="col d-flex justify-content-center p-0 me-1 mb-3">
         <button type="submit" class="simpan btn btn-primary py-1 w-25">Perbaharui</button>
@@ -49,7 +68,6 @@
     $("#upload_poto").click(function(){
       $("#input_poto").trigger('click');
     });
-
     //image prefiew
     function readURL(input) {
       //mengecek apakah ekstensi file sudah benar

@@ -11,19 +11,28 @@ use App\Models\Mahasiswa;
 use App\Models\Transaksi;
 class MataKuliahController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    //////////////////////////  FUNGSI UNTUK MAHASISWA  //////////////////////////////////
+
+    //fungsi untuk menampilkan mata kuliah user
     public function index()
     {
         $matkuls = MataKuliah::where('prodi','=',auth()->user()->program_studi)->orderBy('semester')->paginate(8);
         Paginator::useBootstrap();
-        // dd(json_encode($matkuls));
-        return view('mata_kuliah.daftar_matkul',compact('matkuls'));
+        return view('user.daftar_matkul',compact('matkuls'));
     }
 
+    //fungsi untuk mencari data mata kuliah (AJAX)
+    public function cari(){
+        $matkuls = MataKuliah::select(['kode','nama_mata_kuliah','semester','sks','status_mk'])
+                    ->where('prodi','=',auth()->user()->program_studi)
+                    ->cari(request()->cari,['kode','nama_mata_kuliah'])->get();
+        return json_encode($matkuls);
+    }
+    ////////////////////////// AKHIR DARI FUNGSI UNTUK MAHASISWA  ////////////////////////
+
+    ///////////////////////// FUNGSI UNTUK ADMIN  ///////////////////////////////////////
+
+    //fungsi untuk menampilkan seluruh mata kuliah
     public function semua_matkul(){
         $mata_kuliahs = MataKuliah::where('id','!=',0);
         if(request()->search){
@@ -35,14 +44,13 @@ class MataKuliahController extends Controller
         Paginator::useBootstrap();
         return view('mata_kuliah.seluruh_matkul',compact('mata_kuliahs'));
     }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    //fungsi untuk menampilkan view tambah mata kuliah
     public function tambah(){
         return view('mata_kuliah.tambah_matkul');
     }
+
+    //fungsi untuk menyimpan mata kuliah baru
     public function simpan_tambah()
     {
         request()->validate([
@@ -60,43 +68,20 @@ class MataKuliahController extends Controller
             'prodi' => request()->prodi,
             'status_mk' => request()->status_mk
         ]);
-        return redirect()->route('daftar_matkul')->with('berhasil','Mata Kuliah Berhasil Ditambahkan !');
+        return redirect()->route('daftar_matkul')->with([
+            'jenis_pesan'=>'success',
+            'pesan'=>'Mata Kuliah Berhasil Ditambahkan'
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreMataKuliahRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreMataKuliahRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\MataKuliah  $mataKuliah
-     * @return \Illuminate\Http\Response
-     */
-    public function show(MataKuliah $mataKuliah)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\MataKuliah  $mataKuliah
-     * @return \Illuminate\Http\Response
-     */
+    //fungsi untuk menampilkan view edit mata kuliah
     public function edit($id)
     {
         $matkul = MataKuliah::find($id);
         return view('mata_kuliah.edit_matkul',compact('matkul'));
     }
 
+    //fungsi untuk menyimpan perubahan mata kuliah
     public function simpanedit($id){
         $validate = [
             'kode' => 'required',
@@ -121,30 +106,8 @@ class MataKuliahController extends Controller
 
         return redirect()->route('daftar_matkul');
     }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateMataKuliahRequest  $request
-     * @param  \App\Models\MataKuliah  $mataKuliah
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateMataKuliahRequest $request, MataKuliah $mataKuliah)
-    {
-        //
-    }
 
-    public function cari(){
-        $matkuls = MataKuliah::select(['kode','nama_mata_kuliah','semester','sks','status_mk'])
-                    ->where('prodi','=',auth()->user()->program_studi)
-                    ->cari(request()->cari,['kode','nama_mata_kuliah'])->get();
-        return json_encode($matkuls);
-    }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\MataKuliah  $mataKuliah
-     * @return \Illuminate\Http\Response
-     */
+    //fungsi untuk menghapus data mata kuliah
     public function hapus($id)
     {
         $matkul = MataKuliah::find($id);
@@ -153,6 +116,11 @@ class MataKuliahController extends Controller
             $transaksi->delete();
         }
         $matkul->delete();
-        return redirect()->route('daftar_matkul')->with('berhasil','Data Berhasil Dihapus !');
+        return redirect()->route('daftar_matkul')->with([
+            'jenis_pesan'=>'danger',
+            'pesan'=>'Mata Kuliah Berhasil Dihapus'
+        ]);
     }
+
+    /////////////////////////  AKHIR DARI FUNGSI UNTUK ADMIN  ////////////////////////////////
 }

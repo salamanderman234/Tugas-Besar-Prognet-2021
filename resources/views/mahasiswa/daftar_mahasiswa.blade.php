@@ -3,7 +3,7 @@
 @section('tittle','Daftar Mahasiswa')
 
 @section('content')
-  <div class="row ps-1 pt-4 pb-1">
+  <div class="atas row ps-1 @if(!session()->has('pesan')){{ 'pt-4' }} @endif pb-1">
     <div class="col-7">
       <a role="button" class="btn btn-success" href="{{ route('tambah_mahasiswa') }}">Tambah</a>
     </div>

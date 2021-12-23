@@ -68,7 +68,7 @@
       </div>
       {{-- end sidebar panel--}}
       {{-- content area --}}
-      <div class="container-fluid" >
+      <div class="konten container-fluid" >
           @yield('content')
       </div>
       {{-- content area --}}

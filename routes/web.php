@@ -45,6 +45,7 @@ Route::prefix('/mahasiswa')->middleware('auth')->middleware('verifikasi')->group
     //khs
     Route::get('/khs',[TransaksiController::class,'khs'])->name('khs');
     Route::get('/khs/cari',[TransaksiController::class,'khsMahasiswa'])->name('cari_khs');
+    Route::get('/khs/detail/{id}',[TransaksiController::class,'detailKhs'])->name('detail_khs');
 });
 
 Route::prefix('/admin')->middleware('auth')->middleware('verifikasi')->group(function () {
@@ -66,6 +67,16 @@ Route::prefix('/admin')->middleware('auth')->middleware('verifikasi')->group(fun
     Route::get('/daftarmatkul/{id}',[MataKuliahController::class,'edit'])->name('edit_matkul');
     Route::post('/daftarmatkul/{id}/simpanedit',[MataKuliahController::class,'simpanedit'])->name('simpan_edit_matkul');
     Route::post('/daftarmatkul/{id}/hapus',[MataKuliahController::class,'hapus'])->name('hapus_matkul'); 
+
+    //transaksi
+    Route::get('/daftartransaksi',[TransaksiController::class,'semua_transaksi'])->name('daftar_transaksi');
+    Route::get('/daftartransaksi/detail',[TransaksiController::class,'detail_transaksi'])->name('detail_transaksi');
+    Route::post('/daftartransaksi/delete',[TransaksiController::class,'hapus_transaksi'])->name('hapus_transaksi');
+    Route::get('/daftartransaksi/tambah',[TransaksiController::class,'tambah_transaksi'])->name('tambah_transaksi');
+    Route::post('/daftartransaksi/tambah/simpan',[TransaksiController::class,'simpantambah'])->name('simpan_tambah_transaksi');
+    Route::get('/daftartransaksi/{id}',[TransaksiController::class,'edit_transaksi'])->name('edit_transaksi');
+    Route::post('/daftartransaksi/{id}/simpan',[TransaksiController::class,'simpanedit'])->name('simpan_edit_transaksi');
+    Route::post('/daftartransaksi/{id}/hapus',[TransaksiController::class,'hapus'])->name('hapus_transaksi');
 });
 
 

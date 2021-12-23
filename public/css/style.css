@@ -1,3 +1,17 @@
+.alert {
+    opacity: 0.7;
+    /* left: 50%;
+    right: 50%;
+    width: 20% !important; */
+}
+/* html * {
+    border: 1px solid red;
+} */
+.close {
+    border: none !important;
+    background-color: Transparent;
+    cursor: pointer;
+}
 
 li .nav-link:hover {
     background-color: #75aaf4;
@@ -5,7 +19,6 @@ li .nav-link:hover {
 }
 .form-group {
     margin-top: 10px !important;
-
 }
 .form-group .form-control {
     /* padding-left: 0px; */
@@ -19,7 +32,8 @@ label {
 .keluar:hover {
     background-color: red;
 }
-.reset,.simpan {
+.reset,
+.simpan {
     width: 80%;
 }
 
@@ -30,7 +44,17 @@ label {
 thead {
     box-sizing: border-box !important;
 }
-.konten , .data-profile{
+.konten,
+.data-profile {
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.semi-circle {
+    border-radius: 100% 100% 40% 40%;
+}
+.rotated-semi-circle {
+    cursor: pointer;
+    opacity: 0.7;
+    border-radius: 0 0 40% 40% / 0 0 100% 100%;
 }

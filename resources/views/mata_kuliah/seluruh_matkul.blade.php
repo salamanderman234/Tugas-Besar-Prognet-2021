@@ -1,13 +1,12 @@
 @extends('admin.dashboard')
 @section('tittle','Daftar Mata Kuliah')
 @section('content')
-<div class="row p-3 pt-4 pb-1">
+<div class="atas row p-3 @if(!session()->has('pesan')){{ 'pt-4' }} @endif pb-1">
     <div class="col-7 ps-0">
       <a role="button" class="btn btn-success" href="{{ route('tambah_matkul') }}">Tambah</a>
     </div>
     <div class="col-5 pe-0">
       <form action="{{ route('daftar_matkul') }}" method="GET" class="mb-3 mb-lg-0 d-flex justify-content-end">
-        @csrf
         <input name="search" type="search" class="form-control form-control-dark w-75" placeholder="Cari Matakuliah" aria-label="Search">
       </form>
     </div>
