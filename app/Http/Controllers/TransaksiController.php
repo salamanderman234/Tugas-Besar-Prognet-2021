@@ -65,10 +65,18 @@ class TransaksiController extends Controller
                 ];
             }
         }
+        if(count($tahun_ajaran->toArray())>2){
+            $ips = TransaksiController::ipk([['semester'=>$tahun_ajaran->toArray()[1]['semester']]],1);
+            $maksimal_sks = $ips > 3.0 ? 20 : 16;
+        }else {
+            $maksimal_sks = 20;
+        }
+        
         return view('user.krs',[
             'tahun_ajarans' => $tahun_ajaran,
             'tahun_ajaran_sekarang' => $tahun_ajaran_sekarang,
-            'semester' => $semester
+            'semester' => $semester,
+            'maksimal_sks'=>$maksimal_sks
         ]);
     }
 
@@ -85,7 +93,7 @@ class TransaksiController extends Controller
 
     //fungsi untuk menampilkan krs mahasiswa (AJAX)
     public function krsMahasiswa(){
-        $krs = MataKuliah::krsMahasiswa(auth()->user()->id)->where('transaksis.semester','=',request()->semester)->get();
+        $krs = MataKuliah::krsMahasiswa(auth()->user()->id)->where('status','!=','Dibatalkan')->where('transaksis.semester','=',request()->semester)->get();
         return json_encode($krs);
     }
 
@@ -95,8 +103,11 @@ class TransaksiController extends Controller
         if((int)date('m')>6){
             $is_genap=1;
         }
+        //mengambil mata kuliah yang sudah diajukan
+        $matkuls_sudah_ada = array_column(Transaksi::select('mata_kuliah_id')->where('mahasiswa_id',auth()->user()->id)->where('tahun_ajaran',date('y'))->where('status','Belum Disetujui')->get()->toArray(),'mata_kuliah_id');
         $matkuls = MataKuliah::where('prodi','=',auth()->user()->program_studi)
                 ->whereRaw('semester%2='.(string)$is_genap)
+                ->whereNotIn('id',$matkuls_sudah_ada)
                 ->orderBy('semester')
                 ->paginate(8);
         Paginator::useBootstrap();
@@ -124,7 +135,10 @@ class TransaksiController extends Controller
                 ]);
             }
         }
-        return redirect()->route('krs');
+        return redirect()->route('krs')->with([
+            'jenis_pesan'=>'success',
+            'pesan'=>'Mata Kuliah Berhasil Ditambahkan !'
+        ]);
     }
 
     //fungsi untuk menampilkan khs mahasiswa
@@ -135,9 +149,36 @@ class TransaksiController extends Controller
                         ->groupBy('tahun_ajaran','transaksis.semester')
                         ->orderBy('transaksis.semester','desc')
                         ->get();
+        $ipk = TransaksiController::ipk($tahun_ajarans->toArray(),0);
         return view('user.khs',[
-            "tahun_ajarans" => $tahun_ajarans
+            "tahun_ajarans" => $tahun_ajarans,
+            "ipk" => round($ipk,1)
         ]);
+    }
+
+    //fungsi untuk menampilkan ipk
+    private static function ipk(array $semester, $isIps){
+        $list_nilai = ['A'=>4,'B'=>3,'C'=>2,'D'=>1,'E'=>0,];
+        $nilai = 0;
+        $total_sks = 0;
+        foreach(array_column($semester,'semester') as $data){
+            $khs = Transaksi::khs(auth()->user()->id,['nilai','sks'])
+                             ->where('transaksis.semester','=',$data)->get()
+                             ->toArray();
+            foreach($khs as $nilaisks){
+                if($nilaisks['nilai'] != 'tunda'){
+                    $nilai += $list_nilai[$nilaisks['nilai']] * $nilaisks['sks'];
+                    $total_sks += $nilaisks['sks'];
+                }
+            }
+            if($isIps){
+                break;
+            }
+        }
+        if($total_sks > 0){
+            $nilai /= $total_sks;
+        }
+        return $nilai;
     }
 
     //fungsi untuk menampilkan khs mahasiswa (AJAX)
@@ -147,6 +188,7 @@ class TransaksiController extends Controller
             'kode',
             'nama_mata_kuliah',
             'nilai',
+            'sks',
             'transaksis.tahun_ajaran',
             'transaksis.semester'
         ])->where('transaksis.semester','=',request()->semester);
@@ -161,8 +203,13 @@ class TransaksiController extends Controller
 
     //fungsi untuk menghapus krs 
     public function hapusKrs($id){
-        Transaksi::find($id)->delete();
-        return redirect()->route('krs');
+        $transaksi = Transaksi::find($id);
+        $transaksi->status = "Dibatalkan";
+        $transaksi->save();
+        return redirect()->route('krs')->with([
+            'jenis_pesan'=>'danger',
+            'pesan'=>'Mata Kuliah Berhasil Dihapus !'
+        ]);
     }
 
     //fungsi untuk menampilkan detail dari krs
@@ -180,10 +227,9 @@ class TransaksiController extends Controller
         $transaksis = Transaksi::where('id','!=',0);
         if(request()->search){
             $transaksis ->where('status','LIKE','%'.request()->search.'%')
-                        ->orWhere('mahasiswa_id',request()->search)
-                        ->orWhere('mata_kuliah_id',request()->search);
+                        ->orWhere('mahasiswa_id',request()->search);
         }
-        $transaksis = $transaksis->orderBy('tahun_ajaran','desc')->paginate(8);
+        $transaksis = $transaksis->orderBy('mahasiswa_id')->paginate(8);
         Paginator::useBootstrap();
         return view('transaksi.daftar_transaksi',compact('transaksis'));
     }
@@ -207,11 +253,14 @@ class TransaksiController extends Controller
             $transaksi->nilai = request()->nilai;
             $transaksi->status = request()->status;
             $transaksi->save();
-            return redirect()->route('daftar_transaksi');
+            return redirect()->route('daftar_transaksi')->with([
+                'jenis_pesan'=>'success',
+                'pesan'=>'Transaksi Berhasil Diubah !'
+            ]);
         }
         return back()->with([
             'jenis_pesan'=>'danger',
-            'pesan'=>'Mata Kuliah Tidak Ditemukan'
+            'pesan'=>'Mata Kuliah Tidak Ditemukan atau Tidak Sesuai'
         ]);
     }
 

@@ -39,12 +39,11 @@
         </div>
         <div class="container-fluid d-flex justify-content-between p-0 mb-4">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="yes" id="rememberme" name="rememberme">
+            <input class="form-check-input" type="checkbox" value="1" id="rememberme" name="remember">
             <label class="form-check-label" for="flexCheckDefault"  style="font-size: 0.9rem">
                Ingat Saya
             </label>
           </div>
-            <a href="" style="font-size: 0.9rem">Yahaha Lupa Password ?</a>
         </div>
         <div class="container-fluid d-flex justify-content-center">
           <button type="submit" class="btn btn-primary">Masuk</button>

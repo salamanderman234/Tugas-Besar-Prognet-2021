@@ -23,6 +23,7 @@ class MataKuliahController extends Controller
 
     //fungsi untuk mencari data mata kuliah (AJAX)
     public function cari(){
+        //mengambil data mata kuliah yang sudah diambil pada semester ini
         $matkuls = MataKuliah::select(['kode','nama_mata_kuliah','semester','sks','status_mk'])
                     ->where('prodi','=',auth()->user()->program_studi)
                     ->cari(request()->cari,['kode','nama_mata_kuliah'])->get();
@@ -104,7 +105,10 @@ class MataKuliahController extends Controller
         $matkul->status_mk = request()->status_mk;
         $matkul->save();
 
-        return redirect()->route('daftar_matkul');
+        return redirect()->route('daftar_matkul')->with([
+            'jenis_pesan'=>'success',
+            'pesan'=>'Mata Kuliah Berhasil Diubah !'
+        ]);;
     }
 
     //fungsi untuk menghapus data mata kuliah

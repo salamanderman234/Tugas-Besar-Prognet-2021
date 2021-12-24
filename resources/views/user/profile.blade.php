@@ -2,13 +2,24 @@
 @section('tittle','Profile')
 @section('content')
 @error('foto_mahasiswa')
-  <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+
+<div class="position-fixed alert alert-danger alert-dismissible fade show " role="alert">
+    <div class="container-fluid p-0 m-0 d-flex justify-content-between" style="font-size: 16px">
+      <strong>Pesan :</strong>
+      <span style="width:8px"></span>
+      {{ $message }}
+      <button type="button" class="close ms-auto" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
 @enderror
+
 <div class="row h-100 d-flex align-items-center justify-content-center">
   <div class="col-6 shadow rounded p-3">
       {{-- foto profile --}}
       <div class="row d-flex justify-content-center p-0 m-0 mt-2">
-        <div id="gambar" class="p-0 rounded-circle border" style="width:30%; height:130px; background-image: url('{{ auth()->user()->foto_mahasiswa=='//' ? asset('storage/default-pic/unud.jpeg') : asset('storage/'.auth()->user()->foto_mahasiswa)  }}'); background-repeat:no-repeat; background-size:cover; overflow: hidden">
+        <div id="gambar" class="p-0 rounded-circle" style="width:32%; height:140px; background-image: url('{{ asset('storage/'.auth()->user()->foto_mahasiswa)  }}'); background-repeat:no-repeat; background-size:cover; overflow: hidden">
           <div class="semi-circle container h-75"></div>
           <div id="upload_poto" class="rotated-semi-circle container d-flex justify-content-center text-white bg-dark pt-1" style="height: 25%">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-camera-fill" viewBox="0 0 16 16">
@@ -58,7 +69,12 @@
         <input type="text" class="form-control rounded-0" id="program_studi" placeholder="Program Studi" value="{{ auth()->user()->program_studi }}" readonly>
       </div>
       <div class="col d-flex justify-content-center p-0 me-1 mb-3">
-        <button type="submit" class="simpan btn btn-primary py-1 w-25">Perbaharui</button>
+        <button type="submit" class="simpan btn btn-primary py-1 w-25 ps-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+          </svg>
+          Perbaharui</button>
       </div>
     </form>
   </div>

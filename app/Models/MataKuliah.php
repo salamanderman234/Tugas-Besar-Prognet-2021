@@ -36,6 +36,7 @@ class MataKuliah extends Model
                     $query->where($field,'like','%'.$filter.'%');
                 }
             }
+            
         }else {
             $query->limit(8);
         }

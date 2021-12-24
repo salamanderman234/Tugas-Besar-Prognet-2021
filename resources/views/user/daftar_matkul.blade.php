@@ -17,23 +17,23 @@
         <table class="table table-striped">
             <thead class="bg-primary text-light">
               <tr>
-                <th scope="col">No</th>
-                <th scope="col">Kode</th>
-                <th scope="col">Nama Matakuliah</th>
-                <th scope="col">Semester</th>
-                <th scope="col">SKS</th>
-                <th scope="col">Status</th>
+                <th class="text-center" scope="col">No</th>
+                <th class="text-center" scope="col">Kode</th>
+                <th class="text-center" scope="col">Nama Matakuliah</th>
+                <th class="text-center" scope="col">Semester</th>
+                <th class="text-center" scope="col">SKS</th>
+                <th class="text-center" scope="col">Status</th>
               </tr>
             </thead>
             <tbody class="border-0">
               @foreach ($matkuls as $matkul)
                   <tr>
-                    <td>{{ $loop->index+1+($matkuls->currentPage()-1)*8 }}</td>
-                    <td>{{ $matkul->kode }}</th>
-                    <td>{{ $matkul->nama_mata_kuliah }}</td>
-                    <td> {{ $matkul->semester }} </td>
-                    <td> {{ $matkul->sks }} </td>
-                    <td> {{ $matkul->status_mk }} </td>
+                    <td class="text-center">{{ $loop->index+1+($matkuls->currentPage()-1)*8 }}</td>
+                    <td class="text-center">{{ $matkul->kode }}</th>
+                    <td class="text-center">{{ $matkul->nama_mata_kuliah }}</td>
+                    <td class="text-center"> {{ $matkul->semester }} </td>
+                    <td class="text-center"> {{ $matkul->sks }} </td>
+                    <td class="text-center"> {{ $matkul->status_mk }} </td>
                   </tr>
               @endforeach
             </tbody>

@@ -19,7 +19,8 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)){
+        $remember = request()->has('remember') ? true : false;
+        if (Auth::attempt($credentials, $remember)){
             request()->session()->regenerate();
             return redirect()->intended(route(auth()->user()->jabatan));
         } else {

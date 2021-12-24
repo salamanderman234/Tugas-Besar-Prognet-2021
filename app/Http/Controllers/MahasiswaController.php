@@ -37,7 +37,10 @@ class MahasiswaController extends Controller
         $mahasiswa->telepon = request()->telepon;
         $mahasiswa->save();
 
-        return redirect()->route('mahasiswa');
+        return redirect()->route('mahasiswa')->with([
+            'jenis_pesan'=>'success',
+            'pesan'=>'Data Berhasil Di Perbaharui !'
+        ]);
     }
     ////////////////  AKHIR DARI FUNGSI UNTUK MAHASISWA  //////////////////
 
@@ -45,13 +48,13 @@ class MahasiswaController extends Controller
     
     //fungsi untuk menampilkan seluruh mahasiswa
     public function semua_mahasiswa(){
-        $mahasiswas = Mahasiswa::where('jabatan','=','mahasiswa');
+        $mahasiswas = Mahasiswa::where('id','!=',0);
         if(request()->search){
             $mahasiswas->where('nama','LIKE','%'.request()->search.'%')
                         ->orWhere('nim','LIKE','%'.request()->search.'%')
                         ->orWhere('program_studi','LIKE','%'.request()->search.'%');
         }
-        $mahasiswas = $mahasiswas->orderBy('program_studi')->paginate(8);
+        $mahasiswas = $mahasiswas->where('jabatan','=','mahasiswa')->orderBy('program_studi')->paginate(8);
         Paginator::useBootstrap();
         return view('mahasiswa.daftar_mahasiswa',compact('mahasiswas'));
     }
@@ -83,7 +86,7 @@ class MahasiswaController extends Controller
             'program_studi' => request()->program_studi,
             'angkatan' => request()->angkatan,
             'jabatan'=>'mahasiswa',
-            'foto_mahasiswa' => '//'
+            'foto_mahasiswa' => 'default-pic/propil.png'
         ]);
         return redirect()->route('daftar_mahasiswa')->with([
             'jenis_pesan'=>'success',
