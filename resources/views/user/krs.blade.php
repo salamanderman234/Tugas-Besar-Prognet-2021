@@ -102,12 +102,12 @@
 <script>
   $(document).ready(function(){
       let url = '{{ route("cari_krs",["semester"=> "nilai"])}}';
-      tabel_krs(url.replace('nilai',$('#tahun_ajaran').val()),'tbody',true);
+      tabel_krs(url.replace('nilai',$('#tahun_ajaran').val()),'tbody',$('#tahun_ajaran').val());
       $('#cetak-parameter').val($('#tahun_ajaran').val());
       localStorage['semester'] = {{ $semester }};
       localStorage['krs_maks'] = {{ $maksimal_sks }};
       $('#tahun_ajaran').on('change',function(){
-        tabel_krs(url.replace('nilai',$('#tahun_ajaran').val()),'tbody',false);
+        tabel_krs(url.replace('nilai',$('#tahun_ajaran').val()),'tbody',$('#tahun_ajaran').val());
         $('#cetak-parameter').val($('#tahun_ajaran').val());
       });
   });

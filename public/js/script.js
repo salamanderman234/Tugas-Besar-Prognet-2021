@@ -25,7 +25,7 @@ var listNilai = {
 };
 
 //ajax pada krs
-function tabel_krs(url_ajax, document, first) {
+function tabel_krs(url_ajax, document, semester) {
     let element_html = $(document);
     element_html.load(url_ajax, (response, textStatus) => {
         element_html.empty();
@@ -58,7 +58,7 @@ function tabel_krs(url_ajax, document, first) {
                         )
                     );
                     total_sks += element.sks;
-                    if (first) {
+                    if (semester == Number(localStorage["semester"])) {
                         localStorage["krs_len"] = total_sks;
                     }
                 });
@@ -167,7 +167,6 @@ function krs_tambah(id) {
             .text("Tambah");
         krs_cache.pop(Number($("#" + id).val()));
         krs_len -= Number($("#sks-" + id).val());
-        console.log(krs_len);
     }
     localStorage["krs"] = JSON.stringify({ list: krs_cache, max: krs_maks });
     localStorage["krs_len"] = krs_len;
