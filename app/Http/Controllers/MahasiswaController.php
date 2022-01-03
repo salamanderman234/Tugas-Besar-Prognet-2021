@@ -50,11 +50,13 @@ class MahasiswaController extends Controller
     public function semua_mahasiswa(){
         $mahasiswas = Mahasiswa::where('id','!=',0);
         if(request()->search){
-            $mahasiswas->where('nama','LIKE','%'.request()->search.'%')
-                        ->orWhere('nim','LIKE','%'.request()->search.'%')
-                        ->orWhere('program_studi','LIKE','%'.request()->search.'%');
+            $mahasiswas->where(function($query){
+                $query->where('nama','LIKE','%'.request()->search.'%')
+                ->orWhere('nim','LIKE','%'.request()->search.'%')
+                ->orWhere('program_studi','LIKE','%'.request()->search.'%');
+            });
         }
-        $mahasiswas = $mahasiswas->where('jabatan','=','mahasiswa')->orderBy('program_studi')->paginate(8);
+        $mahasiswas = $mahasiswas->where('jabatan','=','mahasiswa')->orderBy('program_studi')->paginate(8)->withQueryString();
         Paginator::useBootstrap();
         return view('mahasiswa.daftar_mahasiswa',compact('mahasiswas'));
     }
@@ -127,7 +129,10 @@ class MahasiswaController extends Controller
         }
         $mahasiswa->save();
 
-        return redirect()->route('daftar_mahasiswa');
+        return redirect()->route('daftar_mahasiswa')->with([
+            'jenis_pesan'=>'success',
+            'pesan'=>'Mahasiswa Berhasil Ditambahkan'
+        ]);
     }
 
     //fungsi untuk menghapus mahasiswa

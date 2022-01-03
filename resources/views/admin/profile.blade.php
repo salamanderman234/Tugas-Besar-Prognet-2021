@@ -19,7 +19,7 @@
   <div class="col-6 shadow rounded p-3 ">
       {{-- foto profile --}}
       <div class="row d-flex justify-content-center p-0 m-0 mt-2">
-        <div id="gambar" class="p-0 rounded-circle" style="width:32%; height:130px; background-image: url('{{ asset('storage/'.auth()->user()->foto_mahasiswa)  }}'); background-repeat:no-repeat; background-size:cover; overflow: hidden">
+        <div id="gambar" class="p-0 rounded-circle" style="width:30%; height:155.817px; background-image: url('{{ asset('storage/'.auth()->user()->foto_mahasiswa)  }}'); background-repeat:no-repeat; background-size:cover; overflow: hidden">
           <div class="semi-circle container h-75"></div>
           <div id="upload_poto" class="rotated-semi-circle container d-flex justify-content-center text-white bg-dark pt-1" style="height: 25%">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-camera-fill" viewBox="0 0 16 16">
@@ -91,19 +91,6 @@
     });
 
     //image prefiew
-    function readURL(input) {
-      //mengecek apakah ekstensi file sudah benar
-      var url = input.value;
-      var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
-      if (input.files && input.files[0]&& (ext == "png" || ext == "jpeg" || ext == "jpg")) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-              $('#gambar').css('background-image','url("'+ e.target.result+'")');
-          }
-          reader.readAsDataURL(input.files[0]);
-      }
-    }
-
     $("#input_poto").change(function(){
         readURL(this);
     });

@@ -22,21 +22,23 @@
         <table class="table table-striped">
             <thead class="bg-primary text-light">
               <tr>
-                <th class="text-center col-1" scope="col">No</th>
-                <th class="text-center col-2" scope="col">Tahun Ajaran</th>
-                <th class="text-center col-2" scope="col">Id Mahasiswa</th>
-                <th class="text-center col-2" scope="col">Id Mata Kuliah</th>
-                <th class="text-center col-2" scope="col">Status</th>
-                <th class="text-center col-2" scope="col">Aksi</th>
+                <th class="text-center" scope="col">No</th>
+                <th class="text-center" scope="col">Tahun Ajaran</th>
+                <th class="text-center" scope="col">Semester</th>
+                <th class="text-center" scope="col">Mahasiswa</th>
+                <th class="text-center" scope="col">Mata Kuliah</th>
+                <th class="text-center" scope="col">Status</th>
+                <th class="text-center" scope="col">Aksi</th>
               </tr>
             </thead>
             <tbody class="border-0">
               @forelse ($transaksis as $transaksi)
                   <tr>
-                    <td class="text-center">{{ $loop->index+1+($transaksis->currentPage()-1)*10 }}</td>
+                    <td class="text-center">{{ $loop->index+1+($transaksis->currentPage()-1)*8 }}</td>
                     <td class="text-center">{{ $transaksi->tahun_ajaran }}</td>
+                    <td class="text-center">{{ $transaksi->semester }}</td>
                     <td class="text-center">{{ $transaksi->mahasiswa_id }}</td>
-                    <td class="text-center"> {{ $transaksi->mata_kuliah_id }} </td>
+                    <td class="text-center"> {{ App\Models\MataKuliah::find($transaksi->mata_kuliah_id)->nama_mata_kuliah }} </td>
                     <td class="text-center"> {{ $transaksi->status }} </td>
                     <td class="d-flex justify-content-center  px-0">
                         <form action="{{ route('hapus_transaksi',$transaksi->id) }}" method="post" onsubmit ="return persetujuan()">
@@ -60,7 +62,7 @@
                   </tr>
               @empty
                 <tr>
-                  <td colspan="6" align="center"> Tidak ada Transaksi yang Ditemukan ! </td>
+                  <td colspan="7" align="center"> Tidak ada Transaksi yang Ditemukan ! </td>
                 </tr>
               @endforelse
             </tbody>
@@ -77,5 +79,6 @@
               return false;
           }
       }
+      
 </script>
 @endsection

@@ -85,19 +85,6 @@
       $("#input_poto").trigger('click');
     });
     //image prefiew
-    function readURL(input) {
-      //mengecek apakah ekstensi file sudah benar
-      var url = input.value;
-      var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
-      if (input.files && input.files[0]&& (ext == "png" || ext == "jpeg" || ext == "jpg")) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-              $('#gambar').css('background-image','url("'+ e.target.result+'")');
-          }
-          reader.readAsDataURL(input.files[0]);
-      }
-    }
-
     $("#input_poto").change(function(){
         readURL(this);
     });

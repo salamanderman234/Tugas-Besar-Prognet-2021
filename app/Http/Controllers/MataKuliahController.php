@@ -41,7 +41,7 @@ class MataKuliahController extends Controller
                          ->orWhere('kode','LIKE','%'.request()->search.'%')
                          ->orWhere('prodi','LIKE','%'.request()->search.'%');
         }
-        $mata_kuliahs = $mata_kuliahs->orderBy('prodi')->paginate(8);
+        $mata_kuliahs = $mata_kuliahs->orderBy('prodi')->paginate(8)->withQueryString();
         Paginator::useBootstrap();
         return view('mata_kuliah.seluruh_matkul',compact('mata_kuliahs'));
     }

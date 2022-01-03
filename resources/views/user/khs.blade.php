@@ -47,6 +47,7 @@
                 <th class="text-center" scope="col">Kode</th>
                 <th class="text-center" scope="col">Nama Matakuliah</th>
                 <th class="text-center" scope="col">Nilai</th>
+                <th class="text-center" scope="col">Nilai Akhir</th>
                 <th class="text-center" scope="col">Aksi</th>
               </tr>
             </thead>

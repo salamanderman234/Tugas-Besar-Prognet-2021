@@ -42,6 +42,7 @@ Route::prefix('/mahasiswa')->middleware('auth')->middleware('verifikasi')->group
     Route::post('/krs/simpankrs',[TransaksiController::class,'simpanKrs'])->name('simpan_krs');
     Route::get('/krs/hapus/{id}',[TransaksiController::class,'hapusKrs'])->name('hapus_krs');
     Route::get('/krs/detail/{id}',[TransaksiController::class,'detailKrs'])->name('detail_krs');
+    Route::post('/krs/cetak',[TransaksiController::class,'cetakKrs'])->name('cetak_krs');
     //khs
     Route::get('/khs',[TransaksiController::class,'khs'])->name('khs');
     Route::get('/khs/cari',[TransaksiController::class,'khsMahasiswa'])->name('cari_khs');
@@ -58,7 +59,15 @@ Route::prefix('/admin')->middleware('auth')->middleware('verifikasi')->group(fun
      Route::post('/daftarmahasiswa/tambah/simpan',[MahasiswaController::class,'simpan_tambah'])->name('simpan_tambah_mahasiswa');
      Route::get('/daftarmahasiswa/{id}',[MahasiswaController::class,'edit'])->name('edit_mahasiswa');
      Route::post('/daftarmahasiswa/{id}/simpanedit',[MahasiswaController::class,'simpanedit'])->name('simpan_edit_mahasiswa');
-     Route::post('/daftarmahasiswa/{id}/hapus',[MahasiswaController::class,'hapus'])->name('hapus_mahasiswa'); 
+     Route::post('/daftarmahasiswa/{id}/hapus',[MahasiswaController::class,'hapus'])->name('hapus_mahasiswa');
+     
+      // daftaradmin
+      Route::get('/daftaradmin',[AdminController::class,'semua_admin'])->name('daftar_admin');
+      Route::get('/daftaradmin/tambah',[AdminController::class,'tambah'])->name('tambah_admin');
+      Route::post('/daftaradmin/tambah/simpan',[AdminController::class,'simptambah'])->name('simpan_tambah_admin');
+      Route::get('/daftaradmin/{id}',[AdminController::class,'edit'])->name('edit_admin');
+      Route::post('/daftaradmin/{id}/simpanedit',[AdminController::class,'simpanedit'])->name('simpan_edit_admin');
+      Route::post('/daftaradmin/{id}/hapus',[AdminController::class,'hapus'])->name('hapus_admin'); 
 
     // mata kuliah
     Route::get('/daftarmatkul',[MataKuliahController::class,'semua_matkul'])->name('daftar_matkul');
@@ -79,4 +88,8 @@ Route::prefix('/admin')->middleware('auth')->middleware('verifikasi')->group(fun
     Route::post('/daftartransaksi/{id}/hapus',[TransaksiController::class,'hapus'])->name('hapus_transaksi');
 });
 
+
+Route::get('/test',function(){
+    return view('user.cetak_krs');
+});
 

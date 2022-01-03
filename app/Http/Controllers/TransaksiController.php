@@ -9,6 +9,8 @@ use App\Models\Transaksi;
 use App\Models\MataKuliah;
 use App\Models\Mahasiswa;
 use Illuminate\Support\Arr;
+// reference the Dompdf namespace
+use Dompdf\Dompdf;
 
 class TransaksiController extends Controller
 {
@@ -16,8 +18,10 @@ class TransaksiController extends Controller
     private static $validate =[
         'tahun_ajaran' => 'required|numeric',
         'semester' => 'required|numeric',
+        'mahasiswa_id'=>'required|numeric',
         'mata_kuliah_id' => 'required|numeric',
         'nilai' =>  'required',
+        'nilai_angka'=>'numeric',
         'status' => 'required',
     ];
 
@@ -65,7 +69,7 @@ class TransaksiController extends Controller
                 ];
             }
         }
-        if(count($tahun_ajaran->toArray())>2){
+        if(count($tahun_ajaran->toArray())>=2){
             $ips = TransaksiController::ipk([['semester'=>$tahun_ajaran->toArray()[1]['semester']]],1);
             $maksimal_sks = $ips > 3.0 ? 20 : 16;
         }else {
@@ -95,6 +99,29 @@ class TransaksiController extends Controller
     public function krsMahasiswa(){
         $krs = MataKuliah::krsMahasiswa(auth()->user()->id)->where('status','!=','Dibatalkan')->where('transaksis.semester','=',request()->semester)->get();
         return json_encode($krs);
+    }
+
+    public function cetakKrs(){
+        $krs = Transaksi::where('mahasiswa_id',auth()->user()->id)->where('semester',request()->semester)->where('status','Disetujui')->get();
+        $total_krs = 0;
+        $semester = request()->semester;
+        foreach($krs as $item){
+            $total_krs += MataKuliah::find($item->mata_kuliah_id)->sks;
+        }
+        $transkip = view('user.cetak_krs',compact('krs','total_krs','semester'));
+        // return view('user.cetak_krs');
+        // instantiate and use the dompdf class
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($transkip);
+
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'potrait');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser
+        $dompdf->stream();
     }
 
     //fungsi untuk menampilkan krs yang dapat ditambahkan mahasiswa
@@ -166,7 +193,7 @@ class TransaksiController extends Controller
                              ->where('transaksis.semester','=',$data)->get()
                              ->toArray();
             foreach($khs as $nilaisks){
-                if($nilaisks['nilai'] != 'tunda'){
+                if($nilaisks['nilai'] != 'Tunda'){
                     $nilai += $list_nilai[$nilaisks['nilai']] * $nilaisks['sks'];
                     $total_sks += $nilaisks['sks'];
                 }
@@ -189,6 +216,7 @@ class TransaksiController extends Controller
             'nama_mata_kuliah',
             'nilai',
             'sks',
+            'nilai_angka',
             'transaksis.tahun_ajaran',
             'transaksis.semester'
         ])->where('transaksis.semester','=',request()->semester);
@@ -226,10 +254,13 @@ class TransaksiController extends Controller
     public function semua_transaksi(){
         $transaksis = Transaksi::where('id','!=',0);
         if(request()->search){
-            $transaksis ->where('status','LIKE','%'.request()->search.'%')
+            //callback untuk grouping query where
+            $transaksis->where(function($query){
+                $query ->where('status','LIKE','%'.request()->search.'%')
                         ->orWhere('mahasiswa_id',request()->search);
+            });
         }
-        $transaksis = $transaksis->orderBy('mahasiswa_id')->paginate(8);
+        $transaksis = $transaksis->orderBy('mahasiswa_id')->paginate(8)->withQueryString();
         Paginator::useBootstrap();
         return view('transaksi.daftar_transaksi',compact('transaksis'));
     }
@@ -281,6 +312,12 @@ class TransaksiController extends Controller
     // fungsi untuk menyimpan transaksi yang akan ditambahkan
     public function simpantambah(){
         request()->validate(TransaksiController::$validate);
+        if(request()->nilai_angka > 100){
+            return back()->with([
+                'jenis_pesan'=>'warning',
+                'pesan'=>'Nilai Harus Kurang dari 100 !'
+            ]);
+        }
         if (MataKuliah::where('id', request()->mata_kuliah_id)->exists() and
         Mahasiswa::where('id', request()->mahasiswa_id)->exists() and
         MataKuliah::find(request()->mata_kuliah_id)->prodi == 
@@ -299,8 +336,8 @@ class TransaksiController extends Controller
             ]);
         }
         return redirect()->route('tambah_transaksi')->with([
-            'jenis_pesan'=>'danger',
-            'pesan'=>'Data Tidak Ditemukan !'
+            'jenis_pesan'=>'warning',
+            'pesan'=>'Data Mahasiswa atau Matkul Tidak Ditemukan !'
         ]);
     }
     ///////////////////////////  AKHIR DARI FUNGSI ADMIN  ////////////////////////////////////

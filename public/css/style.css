@@ -11,6 +11,16 @@
     right: 50%;
     width: 20% !important; */
 }
+.add,
+.edit {
+    font-size: 0.85em;
+}
+input::placeholder {
+    font-size: 1em;
+}
+input[type="text"] {
+    font-size: 1em;
+}
 
 /* html * {
     border: 1px solid red;

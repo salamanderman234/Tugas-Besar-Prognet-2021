@@ -203,6 +203,7 @@ function tabel_khs(url_ajax, document) {
                                 element.kode,
                                 element.nama_mata_kuliah,
                                 element.nilai,
+                                element.nilai_angka,
                             ],
                         ]).replace(
                             "</tr>",
@@ -215,20 +216,38 @@ function tabel_khs(url_ajax, document) {
                         )
                     );
                     total_sks += element.sks;
-                    if (element.nilai != "tunda") {
+                    if (element.nilai != "Tunda") {
                         total_nilai += listNilai[element.nilai] * element.sks;
                     }
+                    update_sks_ips(total_nilai, total_sks);
                 });
-                $("#ips").text(total_nilai / total_sks);
-                $("#sks").text(total_sks);
-            } else {
-                localStorage["krs_len"] = "0";
-                element_html.append(
-                    '<tr>\
-              <td colspan="5" align="center"> Kamu Belum Mengambil KRS di Semester Ini ! </td>\
-          </tr>'
-                );
             }
         }
     });
+}
+
+function update_sks_ips(total_nilai, total_sks) {
+    $("#ips").text(total_nilai / total_sks);
+    $("#sks").text(total_sks);
+}
+
+//mengubah foto saat upload
+function readURL(input) {
+    //mengecek apakah ekstensi file sudah benar
+    var url = input.value;
+    var ext = url.substring(url.lastIndexOf(".") + 1).toLowerCase();
+    if (
+        input.files &&
+        input.files[0] &&
+        (ext == "png" || ext == "jpeg" || ext == "jpg")
+    ) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $("#gambar").css(
+                "background-image",
+                'url("' + e.target.result + '")'
+            );
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
 }

@@ -43,7 +43,17 @@
       </div>
       {{-- jika user belum mengajukan krs maka search akan berganti menjadi ajukan dan tambah mata kuliah --}}
       <div class="col-5 pe-0">
-        <form class="mb-3 mb-lg-0 d-flex justify-content-end">
+        <form class="mb-3 mb-lg-0 d-flex justify-content-end" action="{{ route('cetak_krs') }}" method="POST">
+          <div class="btn-group d-flex align-items-center p-0 rounded-3">
+            @csrf
+            <input type="text" hidden value="0" name="semester" id="cetak-parameter">
+            <button type="submit" id="cetak" class="btn btn-primary px-3 me-1 rounded">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16" style="margin-top: -1px">
+                <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
+                <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+              </svg>
+              Cetak</button>
+          </div>
           <div class="btn-group d-flex align-items-center p-0 rounded-3">
               <a id="tambah" role="button" class="btn btn-success px-2" href="{{ route('tambah_krs') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16" style="margin-top: -1px">
@@ -93,10 +103,12 @@
   $(document).ready(function(){
       let url = '{{ route("cari_krs",["semester"=> "nilai"])}}';
       tabel_krs(url.replace('nilai',$('#tahun_ajaran').val()),'tbody',true);
+      $('#cetak-parameter').val($('#tahun_ajaran').val());
       localStorage['semester'] = {{ $semester }};
       localStorage['krs_maks'] = {{ $maksimal_sks }};
       $('#tahun_ajaran').on('change',function(){
         tabel_krs(url.replace('nilai',$('#tahun_ajaran').val()),'tbody',false);
+        $('#cetak-parameter').val($('#tahun_ajaran').val());
       });
   });
 </script>
