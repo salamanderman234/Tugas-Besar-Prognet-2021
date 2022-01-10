@@ -47,6 +47,10 @@
         <input type="text" class="form-control rounded-0" id="nama" placeholder="Nama" value="{{ auth()->user()->nama }}" readonly>
       </div>
       <div class="form-group">
+        <label for="password">Password Baru</label>
+        <input type="text" class="form-control rounded-0" id="password" placeholder="Password Baru" name="password_mahasiswa">
+      </div>
+      <div class="form-group">
         <label for="alamat">Alamat</label>
         <input type="text" class="form-control rounded-0 @error('alamat') is-invalid @enderror" id="alamat" placeholder="Apartment, studio, or floor" value="{{ auth()->user()->alamat }}" name="alamat">
         @error('alamat')

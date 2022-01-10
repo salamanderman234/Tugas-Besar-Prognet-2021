@@ -64,7 +64,7 @@ Route::prefix('/admin')->middleware('auth')->middleware('verifikasi')->group(fun
       // daftaradmin
       Route::get('/daftaradmin',[AdminController::class,'semua_admin'])->name('daftar_admin');
       Route::get('/daftaradmin/tambah',[AdminController::class,'tambah'])->name('tambah_admin');
-      Route::post('/daftaradmin/tambah/simpan',[AdminController::class,'simptambah'])->name('simpan_tambah_admin');
+      Route::post('/daftaradmin/tambah/simpan',[AdminController::class,'simpan_tambah'])->name('simpan_tambah_admin');
       Route::get('/daftaradmin/{id}',[AdminController::class,'edit'])->name('edit_admin');
       Route::post('/daftaradmin/{id}/simpanedit',[AdminController::class,'simpanedit'])->name('simpan_edit_admin');
       Route::post('/daftaradmin/{id}/hapus',[AdminController::class,'hapus'])->name('hapus_admin'); 

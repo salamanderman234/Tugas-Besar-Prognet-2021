@@ -39,35 +39,33 @@ class TransaksiController extends Controller
             $semester = $tahun_ajaran->toArray()[0]['semester'];
             if(((int)date('m')>6 && $tahun_ajaran->toArray()[0]['semester']%2==0) || ((int)date('m')<=6 && $tahun_ajaran->toArray()[0]['semester']%2!=0) || (date('Y') != $tahun_ajaran->toArray()[0]['tahun_ajaran'])){
                 $tahun = $tahun_ajaran->toArray()[0]['tahun_ajaran'];
+                // dd($tahun_ajaran->toArray()[0]['semester']%2);
                 if((int)date('m')<=6){
                     $nilai = TransaksiController::selisih((integer) date('Y'),(integer)$tahun_ajaran->toArray()[0]['tahun_ajaran'],0,$tahun_ajaran->toArray()[0]['semester']);
-                    $tahun_ajaran_sekarang = [
-                        'semester' => $nilai,
-                        'tahun_ajaran' => (integer) date('Y')
-                    ];
+
                 }
                 else {
                     $nilai = TransaksiController::selisih((integer) date('Y'),(integer)$tahun_ajaran->toArray()[0]['tahun_ajaran'],1,$tahun_ajaran->toArray()[0]['semester']);
-                    $tahun_ajaran_sekarang = [
-                        'semester' => $nilai,
-                        'tahun_ajaran' => (integer) date('Y')
-                    ];
                 }
+                
+                $tahun_ajaran_sekarang = [
+                    'semester' => $nilai,
+                    'tahun_ajaran' => (integer) date('Y')
+                ];
                 $semester = $nilai;
             }
-        }else {
-            if((int)date('m')<=6){
-                $tahun_ajaran_sekarang= [
-                    'semester' => 1,
-                    'tahun_ajaran' => (integer)date('Y')
-                ];
-            }
-            else {
-                $tahun_ajaran_sekarang = [
-                    'semester' => 1,
-                    'tahun_ajaran' => (integer) date('Y'),
-                ];
-            }
+        }else if((int)date('m')<=6){
+            $semester = 2;
+            $tahun_ajaran_sekarang = [
+                'semester' => 2,
+                'tahun_ajaran' => (integer) date('Y'),
+            ]; 
+        }
+        else {
+            $tahun_ajaran_sekarang = [
+                'semester' => 1,
+                'tahun_ajaran' => (integer) date('Y'),
+            ]; 
         }
         if(count($tahun_ajaran->toArray())>=2){
             $ips = TransaksiController::ipk([['semester'=>$tahun_ajaran->toArray()[1]['semester']]],1);
@@ -158,6 +156,7 @@ class TransaksiController extends Controller
                     'mahasiswa_id' => auth()->user()->id,
                     'mata_kuliah_id' => (int)$krs,
                     'nilai' => 'Tunda',
+                    'nilai_angka'=>-1,
                     'status' => 'Belum Disetujui'
                 ]);
             }
@@ -256,7 +255,7 @@ class TransaksiController extends Controller
         if(request()->search){
             //callback untuk grouping query where
             $transaksis->where(function($query){
-                $query ->where('status','LIKE','%'.request()->search.'%')
+                $query ->where('status','LIKE',request()->search.'%')
                         ->orWhere('mahasiswa_id',request()->search);
             });
         }
@@ -273,6 +272,12 @@ class TransaksiController extends Controller
 
     //fungsi untuk menyimpan perubahan yang dilakukan pada transaksi
     public function simpanedit($id){
+        if(request()->nilai_angka > 100){
+            return back()->with([
+                'jenis_pesan'=>'warning',
+                'pesan'=>'Nilai Harus Kurang dari 100 !'
+            ]);
+        }
         $transaksi = Transaksi::find($id);
         request()->validate(TransaksiController::$validate);
         if (MataKuliah::where('id', request()->mata_kuliah_id)->exists() and
@@ -281,6 +286,7 @@ class TransaksiController extends Controller
             $transaksi->tahun_ajaran = request()->tahun_ajaran;
             $transaksi->semester = request()->semester;
             $transaksi->mata_kuliah_id = request()->mata_kuliah_id;
+            $transaksi->nilai_angka = request()->nilai_angka;
             $transaksi->nilai = request()->nilai;
             $transaksi->status = request()->status;
             $transaksi->save();

@@ -53,38 +53,39 @@ class AdminController extends Controller
         return view('admin.daftar_admin',compact('admins'));
     }
 
-    //fungsi untuk menampilkan view tambah mahasiswa
+    //fungsi untuk menampilkan view tambah admin
     public function tambah()
     {
         return view('admin.tambah_admin');      
     }
 
-    //fungsi untuk menyimpan mahasiswa baru
+    //fungsi untuk menyimpan admin baru
     public function simpan_tambah()
     {
+        // dd(request());
         request()->validate([
             'nim'=> 'required|unique:mahasiswas',
             'nama'=>'required',
             'password_mahasiswa'=>'required',
             'alamat'=> 'required',
-            'telepon'=>'required|numeric',
-            'program_studi'=>'required'
+            'telepon'=>'required|numeric'
         ]);
-        Mahasiswa::create([
+        $mahasiswa = Mahasiswa::create([
             'nim' => request()->nim,
             'nama' => request()->nama,
             'password_mahasiswa' => bcrypt(request()->password_mahasiswa),
             'alamat' => request()->alamat,
             'telepon' => request()->telepon,
-            'program_studi' => request()->program_studi,
+            'program_studi' => 'Teknologi Informasi',
             'angkatan' => 1,
             'jabatan'=>'admin',
             'foto_mahasiswa' => 'default-pic/propil.png'
         ]);
-
         if(request()->file('foto_mahasiswa')){
             $mahasiswa->foto_mahasiswa = request()->file('foto_mahasiswa')
                                                   ->store('profile-mahasiswa');
+            $mahasiswa->save();
+                                                 
         }
 
         return redirect()->route('daftar_admin')->with([
@@ -100,7 +101,7 @@ class AdminController extends Controller
         return view('admin.edit_admin',compact('admin'));
     }
 
-    //fungsi untuk menyimpan perubahan pada mahasiswa
+    //fungsi untuk menyimpan perubahan pada admin
     public function simpanedit($id){
         $validate = [
             'nim'=> 'required',
@@ -121,6 +122,12 @@ class AdminController extends Controller
         $mahasiswa->program_studi = request()->program_studi;
         if(request()->password_mahasiswa){
             $mahasiswa->password_mahasiswa= bcrypt(request()->password_mahasiswa);
+        }
+        if(request()->file('foto_mahasiswa')){
+            $mahasiswa->foto_mahasiswa = request()->file('foto_mahasiswa')
+                                                  ->store('profile-mahasiswa');
+            $mahasiswa->save();
+                                                 
         }
         $mahasiswa->save();
 

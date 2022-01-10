@@ -3,7 +3,7 @@
 @section('content')
 <div class="edit row h-100 d-flex align-items-center justify-content-center">
     <div class="col-6 mt-3 mb-3 me-3 shadow rounded p-3">
-        <form class="row p-0 m-0" action="{{ route('simpan_edit_admin',$admin->id)}}" method="post">
+        <form class="row p-0 m-0" action="{{ route('simpan_edit_admin',$admin->id)}}" method="post" enctype="multipart/form-data">
             @csrf
             <input type="file" hidden name="foto_mahasiswa" id="input_poto" accept="image/png, image/jpg, image/jpeg" />
             <div class="container-fluid d-flex justify-content-center">

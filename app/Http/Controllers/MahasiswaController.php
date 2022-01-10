@@ -33,6 +33,9 @@ class MahasiswaController extends Controller
             $mahasiswa->foto_mahasiswa = request()->file('foto_mahasiswa')
                                                   ->store('profile-mahasiswa');
         }
+        if(request()->password_mahasiswa){
+            $mahasiswa->password_mahasiswa = bcrypt(request()->password_mahasiswa);
+        }
         $mahasiswa->alamat = request()->alamat;
         $mahasiswa->telepon = request()->telepon;
         $mahasiswa->save();

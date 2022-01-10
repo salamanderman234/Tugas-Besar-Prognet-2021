@@ -42,6 +42,18 @@
                 @enderror
             </div>
             <div class="form-group">
+              <label for="nilai_angka">Nilai Angka</label>
+              <input type="text" value="{{ $transaksi->nilai_angka }}" class="form-control rounded-0 @error('nilai_angka') is-invalid @enderror" id="nilai_angka" placeholder="Nilai Angka" name="nilai_angka"
+              oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" />
+              @error('nilai_angka')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+              {{-- input hanya menerima angka integer dan pecahan --}}
+              {{-- https://stackoverflow.com/questions/469357/html-text-input-allow-only-numeric-input --}}
+            </div>
+            {{-- <div class="form-group">
               <label for="nilai">Nilai</label>
               <select class="form-control @error('nilai') is-invalid @enderror" name="nilai" id="nilai">
                   @foreach (['Tunda','A','B','C','D','E'] as $nilai)
@@ -56,6 +68,15 @@
               <div class="invalid-feedback">
                 {{ $message }}
               </div>
+              @enderror
+            </div> --}}
+            <div class="form-group">
+              <label for="nilai">Nilai</label>
+              <input readonly type="text" value="{{ $transaksi->nilai }}" class="form-control rounded-0 @error('nilai') is-invalid @enderror" id="nilai" placeholder="Nilai" name="nilai">
+              @error('nilai')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
               @enderror
             </div>
             <div class="form-group mb-4">
@@ -98,4 +119,23 @@
           </form>
     </div>
 </div>
+<script>
+  $(document).ready(function(){
+    let input_angka = $('#nilai_angka');
+    let input_huruf = $("#nilai");
+    var rentang_nilai = {'A':90,'B':80,'C':70,'D':60,'E':0};
+      input_angka.on('keyup',function(){
+        let keys = Object.keys(rentang_nilai);
+        for(let i=0; i<keys.length;i++){
+          if(input_angka.val() >= rentang_nilai[keys[i]]){
+                input_huruf.val(keys[i]);
+                break;
+          }
+        }
+        if(!(input_angka.val())){
+          input_huruf.val("Tunda");
+        }
+      }); 
+  });
+</script>
 @endsection

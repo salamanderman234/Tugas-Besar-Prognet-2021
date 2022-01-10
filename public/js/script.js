@@ -194,7 +194,11 @@ function tabel_khs(url_ajax, document) {
             var total_sks = 0;
             var total_nilai = 0;
             if (hasil.length > 0) {
+                let nilai_temp = "&nbsp";
                 hasil.forEach((element, index) => {
+                    if (element.nilai_angka > -1) {
+                        nilai_temp = element.nilai_angka;
+                    }
                     element_html.append(
                         row_str([
                             index + 1,
@@ -202,7 +206,7 @@ function tabel_khs(url_ajax, document) {
                                 element.kode,
                                 element.nama_mata_kuliah,
                                 element.nilai,
-                                element.nilai_angka,
+                                nilai_temp,
                             ],
                         ]).replace(
                             "</tr>",
@@ -226,7 +230,8 @@ function tabel_khs(url_ajax, document) {
 }
 
 function update_sks_ips(total_nilai, total_sks) {
-    $("#ips").text(total_nilai / total_sks);
+    let nilai = total_nilai / total_sks;
+    $("#ips").text(nilai.toFixed(1));
     $("#sks").text(total_sks);
 }
 

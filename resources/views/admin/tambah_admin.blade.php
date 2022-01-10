@@ -3,7 +3,7 @@
 @section('content')
 <div class="add row h-100 d-flex align-items-center justify-content-center">
     <div class="col-6 mt-3 mb-3 me-3 shadow rounded p-3">
-        <form class="row p-0 m-0" action="{{ route('simpan_tambah_admin')}}" method="post">
+        <form class="row p-0 m-0" action="{{ route('simpan_tambah_admin')}}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="container-fluid d-flex justify-content-center">
               <div id="gambar" class="p-0 rounded-circle" style="width:155.817px; height:155.817px; background-image: url('{{ asset('storage/default-pic/propil.png')  }}'); background-repeat:no-repeat; background-size:cover; overflow: hidden">
@@ -37,8 +37,8 @@
             </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="text" value="{{ old('password_admin') }}" class="form-control rounded-0 @error('password_admin') is-invalid @enderror" id="password" placeholder="Password" name="password_admin">
-              @error('password_admin')
+              <input type="text" value="{{ old('password_mahasiswa') }}" class="form-control rounded-0 @error('password_mahasiswa') is-invalid @enderror" id="password" placeholder="Password" name="password_mahasiswa">
+              @error('password_mahasiswa')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>
@@ -62,14 +62,14 @@
                   </div>
                 @enderror
               </div>
-            <div class="form-group mb-4">
+            {{-- <div class="form-group mb-4">
               <label for="prodi">Program Studi</label>
               <select class="form-control" name="program_studi" id="prodi">
                   @foreach (['Teknologi Informasi','Teknik Mesin','Teknik Industri','Teknik Elektro','Teknik Arsitektur'] as $prodi)
                       <option value="{{ $prodi }}">{{ $prodi }}</option>
                   @endforeach
               </select>
-            </div>
+            </div> --}}
             <div class="col d-flex justify-content-center p-0 me-1 mb-3">
               <button type="submit" class="simpan btn btn-success py-1 w-25 ps-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cloud-upload-fill me-2" viewBox="0 0 16 16">
